@@ -5,6 +5,9 @@
  */
 package br.com.davidbuzatto.jaas;
 
+import br.com.davidbuzatto.jaas.gui.MainWindow;
+import com.formdev.flatlaf.FlatDarkLaf;
+
 /**
  *
  * @author David
@@ -15,7 +18,16 @@ public class Main {
      * @param args the command line arguments
      */
     public static void main( String[] args ) {
-        // TODO code application logic here
+        
+        FlatDarkLaf.install();
+
+        /* Create and display the form */
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new MainWindow().setVisible( true );
+            }
+        } );
+        
     }
     
 }
