@@ -435,10 +435,8 @@
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Group type="103" groupAlignment="3" attributes="0">
-                              <Component id="btnRunSimulation" alignment="0" min="-2" max="-2" attributes="0"/>
-                              <Component id="btnStopSimulation" alignment="0" min="-2" max="-2" attributes="0"/>
-                          </Group>
+                          <Component id="btnRunSimulation" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="btnStopSimulation" alignment="0" min="-2" max="-2" attributes="0"/>
                           <Component id="btnClearSimulation" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace pref="50" max="32767" attributes="0"/>
@@ -453,9 +451,6 @@
               </Properties>
             </Component>
             <Component class="javax.swing.JTextField" name="txtStringSimulation">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="0000000000"/>
-              </Properties>
             </Component>
             <Component class="javax.swing.JButton" name="btnRunSimulation">
               <Properties>

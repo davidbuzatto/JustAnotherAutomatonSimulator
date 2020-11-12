@@ -459,7 +459,7 @@ public class DFA extends Shape implements Serializable {
         
         StringBuilder sb = new StringBuilder();
         
-        sb.append( "A = { Q, \u03A3, \u03B4, ").append( generateQ0Rep() ).append( ", F }" ).append( "\n" );
+        sb.append( "A = ( Q, \u03A3, \u03B4, ").append( generateQ0Rep() ).append( ", F )" ).append( "\n" );
         sb.append( generateQRep() ).append( "\n" );
         sb.append( generateSigmaRep() ).append( "\n" );
         sb.append( generateFRep() ).append( "\n" );

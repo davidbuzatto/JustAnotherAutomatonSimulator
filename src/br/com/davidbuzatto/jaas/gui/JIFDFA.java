@@ -364,8 +364,6 @@ public class JIFDFA extends javax.swing.JInternalFrame {
 
         lblStringSImulation.setText("String:");
 
-        txtStringSimulation.setText("0000000000");
-
         btnRunSimulation.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/davidbuzatto/jaas/gui/icons/control_play_blue.png"))); // NOI18N
         btnRunSimulation.setToolTipText("run");
         btnRunSimulation.addActionListener(new java.awt.event.ActionListener() {
@@ -419,9 +417,8 @@ public class JIFDFA extends javax.swing.JInternalFrame {
                     .addComponent(txtStringSimulation, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panelSimulationLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(panelSimulationLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(btnRunSimulation)
-                        .addComponent(btnStopSimulation))
+                    .addComponent(btnRunSimulation)
+                    .addComponent(btnStopSimulation)
                     .addComponent(btnClearSimulation))
                 .addContainerGap(50, Short.MAX_VALUE))
         );
