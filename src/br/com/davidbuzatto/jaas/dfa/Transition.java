@@ -14,21 +14,30 @@ import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.QuadCurve2D;
+import java.io.Serializable;
 
 /**
  *
  * @author David
  */
-public class Transition extends Shape {
+public class Transition extends Shape implements Serializable {
     
     private State source;
     private State target;
     private char symbol;
     
+    private Color strokeColor;
+    private Color selectedStrokeColor;
+    
     public Transition( State source, State target, char symbol ) {
+        
         this.source = source;
         this.target = target;
         this.symbol = symbol;
+        
+        strokeColor = Constants.TRANSITION_STROKE_COLOR;
+        selectedStrokeColor = Constants.SELECTED_TRANSITION_STROKE_COLOR;
+    
     }
 
     @Override
@@ -40,9 +49,9 @@ public class Transition extends Shape {
         g2d.setStroke( Constants.TRANSITION_STROKE );
         
         if ( selected ) {
-            g2d.setColor( Constants.SELECTED_TRANSITION_STROKE_COLOR );
+            g2d.setColor( selectedStrokeColor );
         } else {
-            g2d.setColor( Constants.TRANSITION_STROKE_COLOR );
+            g2d.setColor( strokeColor );
         }
         
         
@@ -167,6 +176,22 @@ public class Transition extends Shape {
 
     public void setSymbol( char symbol ) {
         this.symbol = symbol;
+    }
+
+    public Color getStrokeColor() {
+        return strokeColor;
+    }
+
+    public void setStrokeColor( Color strokeColor ) {
+        this.strokeColor = strokeColor;
+    }
+
+    public Color getSelectedStrokeColor() {
+        return selectedStrokeColor;
+    }
+
+    public void setSelectedStrokeColor( Color selectedStrokeColor ) {
+        this.selectedStrokeColor = selectedStrokeColor;
     }
 
     @Override

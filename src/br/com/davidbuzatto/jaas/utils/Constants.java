@@ -27,10 +27,20 @@ public class Constants {
     public static final Color TRANSITION_STROKE_COLOR = Color.BLACK;
     public static final Color SELECTED_TRANSITION_STROKE_COLOR = new Color( 0, 105, 155 );
     
+    public static final Color PROCESSING_STRING_COLOR = Color.BLACK;
+    public static final Color PROCESSING_STRING_CURRENT_SYMBOL_COLOR = new Color( 0, 105, 155 );
+    public static final Color PROCESSING_STRING_CONTROL_COLOR = new Color( 0, 105, 155 );
+    public static final Color PROCESSING_STRING_ACCEPTED_COLOR = new Color( 0, 128, 64 );
+    public static final Color PROCESSING_STRING_REJECTED_COLOR = new Color( 150, 0, 0 );
+    public static final Color PROCESSING_STRING_REJECTED_CURRENT_SYMBOL_COLOR = Color.RED;
+    public static final Color PROCESSING_STRING_REJECTED_CONTROL_COLOR = Color.RED;
+    
     public static final BasicStroke STATE_STROKE = new BasicStroke( 2, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND );
     public static final BasicStroke TRANSITION_STROKE = new BasicStroke( 2, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND );
+    public static final BasicStroke PROCESSING_STRING_STROKE = new BasicStroke( 2, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND );
     
     public static final Font STATE_FONT = new Font( "monospaced", Font.BOLD, 16 );
     public static final Font TRANSITION_FONT = new Font( "monospaced", Font.BOLD, 16 );
+    public static final Font PROCESSING_STRING_FONT = new Font( "monospaced", Font.BOLD, 30 );
     
 }

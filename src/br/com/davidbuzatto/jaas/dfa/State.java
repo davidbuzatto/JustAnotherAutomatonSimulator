@@ -7,10 +7,12 @@ package br.com.davidbuzatto.jaas.dfa;
 
 import br.com.davidbuzatto.jaas.gui.geom.Shape;
 import br.com.davidbuzatto.jaas.utils.Constants;
+import java.awt.Color;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,12 +20,17 @@ import java.util.List;
  * 
  * @author David
  */
-public class State extends Shape {
+public class State extends Shape implements Serializable {
 
     private int number;
     private boolean initial;
     private boolean finall;
     private List<Transition> transitions;
+    
+    private Color strokeColor;
+    private Color fillColor;
+    private Color selectedStrokeColor;
+    private Color selectedFillColor;
 
     public State( int number, boolean initial, boolean finall, double x, double y ) {
         
@@ -38,6 +45,11 @@ public class State extends Shape {
         
         this.transitions = new ArrayList<>();
         
+        strokeColor = Constants.STATE_STROKE_COLOR;
+        fillColor = Constants.STATE_FILL_COLOR;
+        selectedStrokeColor = Constants.SELECTED_STATE_STROKE_COLOR;
+        selectedFillColor = Constants.SELECTED_STATE_FILL_COLOR;
+        
     }
     
     @Override
@@ -49,18 +61,18 @@ public class State extends Shape {
         g2d.setStroke( Constants.STATE_STROKE );
         
         if ( selected ) {
-            g2d.setColor( Constants.SELECTED_STATE_FILL_COLOR );
+            g2d.setColor( selectedFillColor );
         } else {
-            g2d.setColor( Constants.STATE_FILL_COLOR );
+            g2d.setColor( fillColor );
         }
         
         g2d.fill( new Ellipse2D.Double( xStartD, yStartD, xEndD - xStartD, yEndD - yStartD ) );
         
         
         if ( selected ) {
-            g2d.setColor( Constants.SELECTED_STATE_STROKE_COLOR );
+            g2d.setColor( selectedStrokeColor );
         } else {
-            g2d.setColor( Constants.STATE_STROKE_COLOR );
+            g2d.setColor( strokeColor );
         }
         
         g2d.draw( new Ellipse2D.Double( xStartD, yStartD, xEndD - xStartD, yEndD - yStartD ) );
@@ -142,6 +154,38 @@ public class State extends Shape {
 
     public void setNumber( int number ) {
         this.number = number;
+    }
+
+    public Color getStrokeColor() {
+        return strokeColor;
+    }
+
+    public void setStrokeColor( Color strokeColor ) {
+        this.strokeColor = strokeColor;
+    }
+
+    public Color getFillColor() {
+        return fillColor;
+    }
+
+    public void setFillColor( Color fillColor ) {
+        this.fillColor = fillColor;
+    }
+
+    public Color getSelectedStrokeColor() {
+        return selectedStrokeColor;
+    }
+
+    public void setSelectedStrokeColor( Color selectedStrokeColor ) {
+        this.selectedStrokeColor = selectedStrokeColor;
+    }
+
+    public Color getSelectedFillColor() {
+        return selectedFillColor;
+    }
+
+    public void setSelectedFillColor( Color selectedFillColor ) {
+        this.selectedFillColor = selectedFillColor;
     }
 
     @Override

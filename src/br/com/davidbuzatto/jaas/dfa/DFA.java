@@ -10,6 +10,7 @@ import br.com.davidbuzatto.jaas.utils.Constants;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -25,7 +26,7 @@ import java.util.TreeSet;
  *
  * @author David
  */
-public class DFA extends Shape {
+public class DFA extends Shape implements Serializable {
     
     private int stateNumberCount;
     private State initial;
@@ -226,7 +227,7 @@ public class DFA extends Shape {
         
     }
     
-    public boolean accepts( String string ) throws IllegalStateException {
+    public boolean accepts( String string, List<State> stepByStepList ) throws IllegalStateException {
         
         if ( initial == null ) {
             throw new IllegalStateException( 
@@ -242,6 +243,10 @@ public class DFA extends Shape {
         int acceptedSymbols = 0;
         State current = initial;
         
+        if ( stepByStepList != null ) {
+            stepByStepList.add( current );
+        }
+        
         for ( char c : string.toCharArray() ) {
             
             found = false;
@@ -253,6 +258,11 @@ public class DFA extends Shape {
                     current = t.getTarget();
                     found = true;
                     acceptedSymbols++;
+                    
+                    if ( stepByStepList != null ) {
+                        stepByStepList.add( current );
+                    }
+                    
                     break;
                     
                 }
