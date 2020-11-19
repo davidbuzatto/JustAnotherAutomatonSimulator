@@ -8,7 +8,6 @@ package br.com.davidbuzatto.jaas.dfa;
 import br.com.davidbuzatto.jaas.gui.geom.Shape;
 import br.com.davidbuzatto.jaas.utils.Constants;
 import java.awt.Color;
-import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
@@ -43,7 +42,6 @@ public class Transition extends Shape implements Serializable {
     @Override
     public void draw( Graphics2D g2d ) {
         
-        calculateDrawingBounds();
         g2d = (Graphics2D) g2d.create();
         
         g2d.setStroke( Constants.TRANSITION_STROKE );
@@ -53,14 +51,6 @@ public class Transition extends Shape implements Serializable {
         } else {
             g2d.setColor( strokeColor );
         }
-        
-        
-        String s = symbol + "";
-        g2d.setFont( Constants.TRANSITION_FONT );
-        FontMetrics fm = g2d.getFontMetrics();
-        int w = fm.stringWidth( s );
-        int xs = 0;
-        int ys = 0;
         
         if ( source.equals( target ) ) {
             
@@ -76,9 +66,6 @@ public class Transition extends Shape implements Serializable {
             g2dc.draw( new Line2D.Double( 3, -26, 10, -21 ) );
             g2dc.draw( new Line2D.Double( 5, -16, 10, -21 ) );
             g2dc.dispose();
-            
-            xs = (int) ( source.getXStartD() + Constants.STATE_RADIUS - w / 2 );
-            ys = (int) ( source.getYStartD() - Constants.STATE_RADIUS + 5 );
             
         } else {
             
@@ -133,16 +120,8 @@ public class Transition extends Shape implements Serializable {
             g2dc.draw( new Line2D.Double( -5, -5, 0, 0 ) );
             g2dc.draw( new Line2D.Double( -5, 5, 0, 0 ) );
             g2dc.dispose();
-
-            xs = target.getXStartD() > source.getXEndD() ? 
-                    (int) ( source.getXEndD() + ( target.getXStartD() - source.getXEndD() ) / 2 ) :
-                    (int) ( target.getXEndD() + ( source.getXStartD() - target.getXEndD() ) / 2 ); 
-            ys = target.getYStartD() > source.getYEndD() ? 
-                    (int) ( source.getYEndD() + ( target.getYStartD() - source.getYEndD() ) / 2 ) - 5:
-                    (int) ( target.getYEndD() + ( source.getYStartD() - target.getYEndD() ) / 2 ) - 5; 
             
         }
-        //g2d.drawString( s, xs, ys );
         
         
         g2d.dispose();
@@ -196,7 +175,10 @@ public class Transition extends Shape implements Serializable {
 
     @Override
     public String toString() {
-        return String.format( "(%s) --(%c)--> (%s)", source, symbol, target );
+        return String.format( "(%s) --(%c)--> (%s)", 
+                source, 
+                symbol == '\0' ? '\u03B5' : symbol, 
+                target );
     }
     
 }

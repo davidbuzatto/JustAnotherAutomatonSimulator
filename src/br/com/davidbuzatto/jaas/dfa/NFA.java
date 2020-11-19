@@ -17,17 +17,17 @@ import java.util.Set;
  *
  * @author David
  */
-public class DFA extends FiniteAutomaton implements Serializable {
+public class NFA extends FiniteAutomaton implements Serializable {
     
     @Override
     public void addTransition( State source, State target, char symbol ) 
             throws IllegalArgumentException {
         
         for ( Transition t : source.getTransitions() ) {
-            if ( t.getSymbol() == symbol ) {
+            if ( t.getSymbol() == symbol && t.getTarget().equals( target ) ) {
                 throw new IllegalArgumentException( 
                     "The \"" + source + " state already have a transition "
-                  + "with the \"" + symbol + "\" symbol!" );
+                  + "with the \"" + symbol + "\" symbol to the \"" + target + " state!" );
             }
         }
         
@@ -40,12 +40,12 @@ public class DFA extends FiniteAutomaton implements Serializable {
         
         if ( initial == null ) {
             throw new IllegalStateException( 
-                    "This DFA doesn't have an initial state!" );
+                    "This NFA doesn't have an initial state!" );
         }
         
         if ( countFinalStates() == 0 ) {
             throw new IllegalStateException( 
-                    "This DFA doesn't have at least one final state!" );
+                    "This NFA doesn't have at least one final state!" );
         }
         
         boolean found;
@@ -87,7 +87,7 @@ public class DFA extends FiniteAutomaton implements Serializable {
         return current.isFinal() && acceptedSymbols == string.length();
         
     }
-    
+        
     @Override
     public String generateTransitionFunctionRep() {
         
@@ -97,6 +97,9 @@ public class DFA extends FiniteAutomaton implements Serializable {
         
         sb.append( "\u03B4:\t" );
         for ( char s : symbols ) {
+            if ( s == '\0' ) {
+                s = '\u03B5';
+            }
             sb.append( "| " ).append( s ).append( "\t" );
         }
         sb.append( "\n" ).append( line ).append( "\n" );
@@ -132,15 +135,22 @@ public class DFA extends FiniteAutomaton implements Serializable {
             for ( char s : symbols ) {
                 
                 Transition tf = null;
+                StringBuilder tt = new StringBuilder();
+                boolean firstT = true;
                 
                 for ( Transition t : e.getTransitions() ) {
                     if ( s == t.getSymbol() ) {
-                        tf = t;
-                        break;
+                        if ( firstT ) {
+                            firstT = false;
+                        } else {
+                            tt.append( ", " );
+                        }
+                        tt.append( t.getTarget() );
                     }
                 }
-                if ( tf != null ) {
-                    sb.append( "| " ).append( tf.getTarget() ).append( "\t" );
+                
+                if ( !tt.isEmpty() ) {
+                    sb.append( "| " ).append( "{" ).append( tt ).append( "}\t" );
                 } else {
                     sb.append( "| " ).append( "\u2205" ).append( "\t" );
                 }
@@ -192,18 +202,27 @@ public class DFA extends FiniteAutomaton implements Serializable {
             for ( char s : symbols ) {
                 
                 Transition tf = null;
+                StringBuilder tt = new StringBuilder();
+                boolean firstT = true;
                 
                 for ( Transition t : e.getTransitions() ) {
                     if ( s == t.getSymbol() ) {
-                        tf = t;
-                        break;
+                        if ( firstT ) {
+                            firstT = false;
+                        } else {
+                            tt.append( ", " );
+                        }
+                        tt.append( t.getTarget() );
                     }
                 }
-                if ( tf != null ) {
-                    data.add( tf.getTarget().toString() );
+                
+                if ( !tt.isEmpty() ) {
+                    data.add( "{" + tt + "}" );
                 } else {
                     data.add( "\u2205" );
                 }
+                
+                
                 
             }
             

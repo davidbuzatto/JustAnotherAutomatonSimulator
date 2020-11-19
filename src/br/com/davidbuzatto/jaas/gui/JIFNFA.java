@@ -5,7 +5,7 @@
  */
 package br.com.davidbuzatto.jaas.gui;
 
-import br.com.davidbuzatto.jaas.dfa.DFA;
+import br.com.davidbuzatto.jaas.dfa.NFA;
 import br.com.davidbuzatto.jaas.dfa.ProcessingString;
 import br.com.davidbuzatto.jaas.dfa.State;
 import br.com.davidbuzatto.jaas.utils.AppPrefs;
@@ -23,21 +23,27 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
+import javax.swing.JCheckBox;
 import javax.swing.JColorChooser;
+import javax.swing.JComponent;
 import javax.swing.JFileChooser;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
+import javax.swing.event.AncestorEvent;
+import javax.swing.event.AncestorListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 /**
  *
  * @author David
  */
-public class JIFDFA extends javax.swing.JInternalFrame {
+public class JIFNFA extends javax.swing.JInternalFrame {
 
-    private DFA dfa;
+    private NFA nfa;
     private State selectedState;
     
     private State selectedSourceState;
@@ -53,17 +59,17 @@ public class JIFDFA extends javax.swing.JInternalFrame {
             
     
     /**
-     * Creates new form JIFDFA
+     * Creates new form JIFNFA
      */
-    public JIFDFA( boolean createExample ) {
+    public JIFNFA( boolean createExample ) {
         
         initComponents();
         
-        setFrameIcon( new ImageIcon( getClass().getResource( "/br/com/davidbuzatto/jaas/gui/icons/dfa.png" ) ) );
-        jifTests.setFrameIcon( new ImageIcon( getClass().getResource( "/br/com/davidbuzatto/jaas/gui/icons/dfa.png" ) ) );
+        setFrameIcon( new ImageIcon( getClass().getResource( "/br/com/davidbuzatto/jaas/gui/icons/nfa.png" ) ) );
+        jifTests.setFrameIcon( new ImageIcon( getClass().getResource( "/br/com/davidbuzatto/jaas/gui/icons/nfa.png" ) ) );
         
-        dfa = new DFA();
-        drawPanel.setMainShape( dfa );
+        nfa = new NFA();
+        drawPanel.setMainShape( nfa );
         
         if ( createExample ) {
             createExample( );
@@ -174,7 +180,7 @@ public class JIFDFA extends javax.swing.JInternalFrame {
         setIconifiable(true);
         setMaximizable(true);
         setResizable(true);
-        setTitle("DFA - Deterministic Finite Automaton");
+        setTitle("NFA - Nondeterministic Finite Automaton");
 
         toolbar.setFloatable(false);
 
@@ -462,12 +468,12 @@ public class JIFDFA extends javax.swing.JInternalFrame {
         
         if ( selectedState != null ) {
             
-            if ( dfa.getInitial() != null ) {
-                dfa.getInitial().setInitial( false );
+            if ( nfa.getInitial() != null ) {
+                nfa.getInitial().setInitial( false );
             }
             
             selectedState.setInitial( true );
-            dfa.setInitial( selectedState );
+            nfa.setInitial( selectedState );
             
         }
         
@@ -495,7 +501,7 @@ public class JIFDFA extends javax.swing.JInternalFrame {
                 JOptionPane.YES_NO_OPTION ) == JOptionPane.YES_OPTION ) {
             
             if ( selectedState != null ) {
-                dfa.removeState( selectedState );
+                nfa.removeState( selectedState );
             }
 
             clearSelectedStates();
@@ -553,13 +559,13 @@ public class JIFDFA extends javax.swing.JInternalFrame {
 
                  if ( btnAddState.isSelected() ) {
 
-                    dfa.addState( false, false, evt.getX(), evt.getY() );
+                    nfa.addState( false, false, evt.getX(), evt.getY() );
 
                 } else if ( btnAddTransition.isSelected() ) {
 
                     if ( selectedSourceState == null ) {
 
-                        selectedSourceState = dfa.getInterceptedState( evt.getX(), evt.getY() );
+                        selectedSourceState = nfa.getInterceptedState( evt.getX(), evt.getY() );
 
                         if ( selectedSourceState != null ) {
                             selectedSourceState.setSelected( true );
@@ -567,7 +573,7 @@ public class JIFDFA extends javax.swing.JInternalFrame {
 
                     } else if ( selectedTargetState == null ) {
 
-                        selectedTargetState = dfa.getInterceptedState( evt.getX(), evt.getY() );
+                        selectedTargetState = nfa.getInterceptedState( evt.getX(), evt.getY() );
 
                         if ( selectedTargetState != null ) {
 
@@ -579,22 +585,22 @@ public class JIFDFA extends javax.swing.JInternalFrame {
                                         String.format( "(%s) -> (%s) transition(s) symbol",
                                                 selectedSourceState, selectedTargetState ) );
 
-                                boolean duplicateAndNDT = false;
-                                
+                                boolean duplicate = false;
+
                                 if ( symbols != null ) {
-                                        
+
                                     for ( char s : symbols.toCharArray() ) {
                                         try {
-                                            dfa.addTransition( selectedSourceState, selectedTargetState, s );
+                                            nfa.addTransition( selectedSourceState, selectedTargetState, s );
                                         } catch ( IllegalArgumentException exc ) {
-                                            duplicateAndNDT = true;
+                                            duplicate = true;
                                         }
                                     }
 
                                 }
-                                
-                                if ( duplicateAndNDT ) {
-                                    JOptionPane.showMessageDialog( this, "Duplicated symbols and non-determinism were ignored!" );
+
+                                if ( duplicate ) {
+                                    JOptionPane.showMessageDialog( this, "Duplicated symbols were ignored!" );
                                 }
 
                                 selectedSourceState.setSelected( false );
@@ -699,7 +705,7 @@ public class JIFDFA extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_drawPanelMouseDragged
 
     private void btnShowFormalDefinitionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnShowFormalDefinitionActionPerformed
-        FormalDefinitionDialog fd = new FormalDefinitionDialog( null, dfa, true );
+        FormalDefinitionDialog fd = new FormalDefinitionDialog( null, nfa, true );
         fd.setVisible( true );
     }//GEN-LAST:event_btnShowFormalDefinitionActionPerformed
 
@@ -713,7 +719,7 @@ public class JIFDFA extends javax.swing.JInternalFrame {
             for ( String string : strings ) {
                 sb.append( String.format( "%s %s L(A)\n", 
                         string.length() == 0 ? "\u03B5" : string, 
-                        dfa.accepts( string, null ) ? "\u2208" : "\u2209" ) );
+                        nfa.accepts( string, null ) ? "\u2208" : "\u2209" ) );
             }
 
             JOptionPane.showMessageDialog( this, createJTextAreaShowData( sb.toString(), 20, 50 ), 
@@ -733,12 +739,12 @@ public class JIFDFA extends javax.swing.JInternalFrame {
         try {
             
             JFileChooser jfc = new JFileChooser( new File( AppPrefs.getPref( AppPrefs.DEFAULT_DIR ) ) );
-            jfc.setDialogTitle( "Save DFA" );
+            jfc.setDialogTitle( "Save NFA" );
             jfc.setMultiSelectionEnabled( false );
             jfc.setFileSelectionMode( JFileChooser.FILES_ONLY );
             jfc.removeChoosableFileFilter( jfc.getFileFilter() );
-            jfc.setFileFilter( new FileNameExtensionFilter( "JAAS DFA Definition File", "jaasdfa" ) );
-            jfc.setSelectedFile( new File( "dfa.jaasdfa" ) );
+            jfc.setFileFilter( new FileNameExtensionFilter( "JAAS NFA Definition File", "jaasnfa" ) );
+            jfc.setSelectedFile( new File( "nfa.jaasnfa" ) );
             
             if ( jfc.showSaveDialog( this ) == JFileChooser.APPROVE_OPTION ) {
                 
@@ -753,15 +759,15 @@ public class JIFDFA extends javax.swing.JInternalFrame {
                         save = false;
                     }
                 } else {
-                    if ( !f.getName().endsWith( ".jaasdfa" ) ) {
-                        f = new File( f.getAbsolutePath() + ".jaasdfa" );
+                    if ( !f.getName().endsWith( ".jaasnfa" ) ) {
+                        f = new File( f.getAbsolutePath() + ".jaasnfa" );
                     }
                 }
 
                 if ( save ) {
                     AppPrefs.setPref( AppPrefs.DEFAULT_DIR, f.getParentFile().getAbsolutePath() );
                     try ( ObjectOutputStream oos = new ObjectOutputStream( new FileOutputStream( f ) ) ) {
-                        oos.writeObject( dfa );
+                        oos.writeObject( nfa );
                     } catch ( FileNotFoundException exc ) {
                         exc.printStackTrace();
                     }
@@ -780,12 +786,12 @@ public class JIFDFA extends javax.swing.JInternalFrame {
         try {
             
             JFileChooser jfc = new JFileChooser( new File( AppPrefs.getPref( AppPrefs.DEFAULT_DIR ) ) );
-            jfc.setDialogTitle( "Load DFA" );
+            jfc.setDialogTitle( "Load NFA" );
             jfc.setMultiSelectionEnabled( false );
             jfc.setFileSelectionMode( JFileChooser.FILES_ONLY );
             jfc.removeChoosableFileFilter( jfc.getFileFilter() );
-            jfc.setFileFilter( new FileNameExtensionFilter( "JAAS DFA Definition File", "jaasdfa" ) );
-            jfc.setSelectedFile( new File( "dfa.jaasdfa" ) );
+            jfc.setFileFilter( new FileNameExtensionFilter( "JAAS NFA Definition File", "jaasnfa" ) );
+            jfc.setSelectedFile( new File( "nfa.jaasnfa" ) );
             
             if ( jfc.showOpenDialog( this ) == JFileChooser.APPROVE_OPTION ) {
                 
@@ -797,8 +803,8 @@ public class JIFDFA extends javax.swing.JInternalFrame {
                     
                     try ( ObjectInputStream ois = new ObjectInputStream( new FileInputStream( f ) ) ) {
                         
-                        dfa = (DFA) ois.<DFA>readObject();
-                        drawPanel.setMainShape( dfa );
+                        nfa = (NFA) ois.<NFA>readObject();
+                        drawPanel.setMainShape( nfa );
                         drawPanel.repaint();
                         
                     } catch ( FileNotFoundException exc ) {
@@ -825,7 +831,7 @@ public class JIFDFA extends javax.swing.JInternalFrame {
             jfc.setFileSelectionMode( JFileChooser.FILES_ONLY );
             jfc.removeChoosableFileFilter( jfc.getFileFilter() );
             jfc.setFileFilter( new FileNameExtensionFilter( "Portable Network Graphics", "png" ) );
-            jfc.setSelectedFile( new File( "dfa.png" ) );
+            jfc.setSelectedFile( new File( "nfa.png" ) );
             
             if ( jfc.showSaveDialog( this ) == JFileChooser.APPROVE_OPTION ) {
                 
@@ -862,11 +868,11 @@ public class JIFDFA extends javax.swing.JInternalFrame {
         
         if ( JOptionPane.showConfirmDialog( 
                 this, 
-                "Clear the current DFA?", 
+                "Clear the current NFA?", 
                 "Confirmation", 
                 JOptionPane.YES_NO_OPTION ) == JOptionPane.YES_OPTION ) {
             
-            dfa.clear();
+            nfa.clear();
         
         }
         
@@ -904,7 +910,7 @@ public class JIFDFA extends javax.swing.JInternalFrame {
             runningSimulation = true;
             
             List<State> simulationList = new ArrayList<>();
-            boolean accepted = dfa.accepts( txtStringSimulation.getText(), simulationList );
+            boolean accepted = nfa.accepts( txtStringSimulation.getText(), simulationList );
             
             new Thread( new Runnable() {
                 @Override
@@ -992,7 +998,7 @@ public class JIFDFA extends javax.swing.JInternalFrame {
     
     private void lookForSelectedState() {
         
-        selectedState = dfa.getInterceptedState( xPressed, yPressed );
+        selectedState = nfa.getInterceptedState( xPressed, yPressed );
         
         if ( selectedState != null ) {
             selectedState.setSelected( true );
@@ -1032,56 +1038,15 @@ public class JIFDFA extends javax.swing.JInternalFrame {
     
     private void createExample() throws IllegalArgumentException {
         
-        /*State q0 = dfa.addState( true, false, 100, 100 );
-        State q1 = dfa.addState( false, false, 300, 100 );
-        State q2 = dfa.addState( false, false, 500, 100 );
-        State q3 = dfa.addState( false, true, 700, 100 );
+        State q0 = nfa.addState( true, false, 100, 200 );
+        State q1 = nfa.addState( false, false, 250, 200 );
+        State q2 = nfa.addState( false, true, 400, 200 );
         
-        dfa.addTransition( q0, q0, '0' );
-        dfa.addTransition( q0, q0, '5' );
-        dfa.addTransition( q0, q1, '1' );
-        dfa.addTransition( q0, q1, 'a' );
+        nfa.addTransition( q0, q0, '0' );
+        nfa.addTransition( q0, q0, '1' );
+        nfa.addTransition( q0, q1, '0' );
         
-        dfa.addTransition( q1, q1, '1' );
-        dfa.addTransition( q1, q1, '5' );
-        dfa.addTransition( q1, q2, '2' );
-        dfa.addTransition( q1, q2, 'b' );
-        
-        dfa.addTransition( q2, q2, '2' );
-        dfa.addTransition( q2, q2, '5' );
-        dfa.addTransition( q2, q3, '3' );
-        dfa.addTransition( q2, q3, 'c' );
-        
-        dfa.addTransition( q3, q3, '3' );
-        dfa.addTransition( q3, q3, '5' );*/
-        
-        /*State q0 = dfa.addState( true, false, 100, 200 );
-        State q1 = dfa.addState( false, false, 300, 100 );
-        State q2 = dfa.addState( false, true, 500, 100 );
-        State q3 = dfa.addState( false, true, 300, 300 );
-        State q4 = dfa.addState( false, false, 500, 300 );
-        
-        dfa.addTransition( q0, q1, '0' );
-        dfa.addTransition( q0, q3, '1' );
-        
-        dfa.addTransition( q1, q2, '0' );
-        dfa.addTransition( q2, q1, '0' );
-        
-        dfa.addTransition( q3, q4, '1' );
-        dfa.addTransition( q4, q3, '1' );*/
-        
-        State q0 = dfa.addState( true, false, 100, 200 );
-        State q1 = dfa.addState( false, false, 250, 200 );
-        State q2 = dfa.addState( false, true, 400, 200 );
-        
-        dfa.addTransition( q0, q0, '1' );
-        dfa.addTransition( q0, q1, '0' );
-        
-        dfa.addTransition( q1, q1, '0' );
-        dfa.addTransition( q1, q2, '1' );
-        
-        dfa.addTransition( q2, q2, '0' );
-        dfa.addTransition( q2, q2, '1' );
+        nfa.addTransition( q1, q2, '1' );
         
     }
     

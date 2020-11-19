@@ -55,7 +55,6 @@ public class State extends Shape implements Serializable {
     @Override
     public void draw( Graphics2D g2d ) {
         
-        calculateDrawingBounds();
         g2d = (Graphics2D) g2d.create();
         
         g2d.setStroke( Constants.STATE_STROKE );
@@ -66,7 +65,7 @@ public class State extends Shape implements Serializable {
             g2d.setColor( fillColor );
         }
         
-        g2d.fill( new Ellipse2D.Double( xStartD, yStartD, xEndD - xStartD, yEndD - yStartD ) );
+        g2d.fill( new Ellipse2D.Double( xStart, yStart, xEnd - xStart, yEnd - yStart ) );
         
         
         if ( selected ) {
@@ -75,10 +74,10 @@ public class State extends Shape implements Serializable {
             g2d.setColor( strokeColor );
         }
         
-        g2d.draw( new Ellipse2D.Double( xStartD, yStartD, xEndD - xStartD, yEndD - yStartD ) );
+        g2d.draw( new Ellipse2D.Double( xStart, yStart, xEnd - xStart, yEnd - yStart ) );
         
         if ( finall ) {
-            g2d.draw( new Ellipse2D.Double( xStartD + 4, yStartD + 4, xEndD - xStartD - 8, yEndD - yStartD - 8 ) );
+            g2d.draw( new Ellipse2D.Double( xStart + 4, yStart + 4, xEnd - xStart - 8, yEnd - yStart - 8 ) );
         }
         
         
@@ -89,8 +88,8 @@ public class State extends Shape implements Serializable {
         int w = fm.stringWidth( q );
         
         g2d.drawString( "q" + number, 
-                (int) ( xStartD + Constants.STATE_RADIUS ) - w / 2, 
-                (int) ( yStartD + Constants.STATE_RADIUS ) + 4 );
+                (int) ( xStart + Constants.STATE_RADIUS ) - w / 2, 
+                (int) ( yStart + Constants.STATE_RADIUS ) + 4 );
         
         
         g2d.setStroke( Constants.TRANSITION_STROKE );
@@ -102,9 +101,9 @@ public class State extends Shape implements Serializable {
         }
         
         if ( initial ) {
-            g2d.draw( new Line2D.Double( xStartD - 20, yStartD + ( yEndD - yStartD ) / 2, xStartD, yStartD + ( yEndD - yStartD ) / 2 ) );
-            g2d.draw( new Line2D.Double( xStartD - 5, yStartD + ( yEndD - yStartD ) / 2 - 5, xStartD, yStartD + ( yEndD - yStartD ) / 2 ) );
-            g2d.draw( new Line2D.Double( xStartD - 5, yStartD + ( yEndD - yStartD ) / 2 + 5, xStartD, yStartD + ( yEndD - yStartD ) / 2 ) );
+            g2d.draw( new Line2D.Double( xStart - 20, yStart + ( yEnd - yStart ) / 2, xStart, yStart + ( yEnd - yStart ) / 2 ) );
+            g2d.draw( new Line2D.Double( xStart - 5, yStart + ( yEnd - yStart ) / 2 - 5, xStart, yStart + ( yEnd - yStart ) / 2 ) );
+            g2d.draw( new Line2D.Double( xStart - 5, yStart + ( yEnd - yStart ) / 2 + 5, xStart, yStart + ( yEnd - yStart ) / 2 ) );
         }
         
         g2d.dispose();
@@ -113,7 +112,9 @@ public class State extends Shape implements Serializable {
 
     @Override
     public boolean intercepts( double x, double y ) {
-        return x >= xStartD && x <= xEndD && y >= yStartD && y <= yEndD;
+        double c1 = xStart + Constants.STATE_RADIUS - x;
+        double c2 = yStart + Constants.STATE_RADIUS - y;
+        return c1 * c1 + c2 * c2 <= Constants.STATE_RADIUS * Constants.STATE_RADIUS;
     }
     
     public void addTransition( State target, char symbol ) {

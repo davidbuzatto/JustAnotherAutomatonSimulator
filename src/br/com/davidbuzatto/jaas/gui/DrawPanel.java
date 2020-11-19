@@ -11,8 +11,6 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
-import java.util.List;
 import javax.swing.JPanel;
 
 /**
@@ -21,7 +19,7 @@ import javax.swing.JPanel;
  */
 public class DrawPanel extends JPanel {
     
-    private List<Shape> shapes;
+    private Shape mainShape;
     private Shape tempShape;
     private BufferedImage image;
     
@@ -32,8 +30,6 @@ public class DrawPanel extends JPanel {
         
         /*setBackground( new Color( 0, 0, 0, 0 ) );
         setOpaque( false );*/
-        
-        shapes = new ArrayList<>();
         
         /*undoStack = new ArrayDeque<>();
         redoStack = new ArrayDeque<>();*/
@@ -54,8 +50,8 @@ public class DrawPanel extends JPanel {
         g2d.setPaint( Color.WHITE );
         g2d.fillRect( 0, 0, getWidth(), getHeight() );
         
-        for ( Shape shape : shapes ) {
-            shape.draw( g2d );
+        if ( mainShape != null ) {
+            mainShape.draw( g2d );
         }
         
         if ( tempShape != null ) {
@@ -104,21 +100,13 @@ public class DrawPanel extends JPanel {
     public void setTempShape( Shape tempShape ) {
         this.tempShape = tempShape;
     }
-
-    public List<Shape> getShapes() {
-        return shapes;
-    }
     
-    public void addShape( Shape shape ) {
-        shapes.add( shape );
-    }
-    
-    public void removeShape( Shape shape ) {
-        shapes.remove( shape );
+    public void setMainShape( Shape shape ) {
+        mainShape = shape;
     }
     
     public void reset() {
-        shapes.clear();
+        mainShape = null;
         tempShape = null;
     }
     

@@ -18,16 +18,11 @@ public abstract class Shape implements Serializable {
     private static int idCount;
     private int id;
     
+    // drawing coordinates
     protected double xStart;
     protected double yStart;
     protected double xEnd;
     protected double yEnd;
-    
-    // drawing coordinates
-    protected double xStartD;
-    protected double yStartD;
-    protected double xEndD;
-    protected double yEndD;
     
     protected Color strokeColor;
     protected Color fillColor;
@@ -50,15 +45,6 @@ public abstract class Shape implements Serializable {
         xEnd += difX;
         yStart += difY;
         yEnd += difY;
-    }
-    
-    public void calculateDrawingBounds() {
-        
-        xStartD = xStart < xEnd ? xStart : xEnd;
-        xEndD = xStart < xEnd ? xEnd : xStart;
-        yStartD = yStart < yEnd ? yStart : yEnd;
-        yEndD = yStart < yEnd ? yEnd : yStart;
-        
     }
 
     public int getId() {
@@ -130,19 +116,19 @@ public abstract class Shape implements Serializable {
     }
 
     public double getXStartD() {
-        return xStartD;
+        return xStart;
     }
 
     public double getYStartD() {
-        return yStartD;
+        return yStart;
     }
 
     public double getXEndD() {
-        return xEndD;
+        return xEnd;
     }
 
     public double getYEndD() {
-        return yEndD;
+        return yEnd;
     }
     
     @Override
@@ -177,10 +163,10 @@ public abstract class Shape implements Serializable {
         target.xEnd = origin.xEnd;
         target.yEnd = origin.yEnd;
 
-        target.xStartD = origin.xStartD;
-        target.yStartD = origin.yStartD;
-        target.xEndD = origin.xEndD;
-        target.yEndD = origin.yEndD;
+        target.xStart = origin.xStart;
+        target.yStart = origin.yStart;
+        target.xEnd = origin.xEnd;
+        target.yEnd = origin.yEnd;
 
         target.strokeColor = origin.strokeColor;
         target.fillColor = origin.fillColor;

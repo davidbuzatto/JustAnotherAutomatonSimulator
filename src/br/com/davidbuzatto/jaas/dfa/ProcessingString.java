@@ -44,8 +44,8 @@ public class ProcessingString extends Shape implements Serializable {
         this.currentSymbolColor = currentSymbolColor;
         this.controlColor = controlColor;
         this.currentSymbol = currentSymbol;
-        this.xStartD = x;
-        this.yStartD = y;
+        this.xStart = x;
+        this.yStart = y;
     }
     
     @Override
@@ -58,8 +58,8 @@ public class ProcessingString extends Shape implements Serializable {
         FontMetrics fm = g2d.getFontMetrics();
         int w = fm.stringWidth( string );
         
-        int x = (int) ( xStartD - w / 2 );
-        int y = (int) yStartD;
+        int x = (int) ( xStart - w / 2 );
+        int y = (int) yStart;
         int p = 0;
         
         int xc = x;

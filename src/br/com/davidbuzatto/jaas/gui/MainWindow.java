@@ -7,6 +7,7 @@ package br.com.davidbuzatto.jaas.gui;
 
 import br.com.davidbuzatto.jaas.utils.Constants;
 import com.formdev.flatlaf.FlatDarkLaf;
+import com.vdurmont.emoji.EmojiParser;
 import javax.swing.JOptionPane;
 
 /**
@@ -21,11 +22,18 @@ public class MainWindow extends javax.swing.JFrame {
     public MainWindow() {
         
         initComponents();
+        setTitle( getTitle() + " - " + Constants.VERSION );
         
-        JIFDFA jifDFA = new JIFDFA( true );
-        desktopPane.add( jifDFA );
-        jifDFA.setVisible( true );
-        jifDFA.requestFocus();
+        JIFDFA jif1 = new JIFDFA( true );
+        JIFNFA jif2 = new JIFNFA( true );
+        JIFENFA jif3 = new JIFENFA( true );
+        
+        desktopPane.add( jif1 );
+        desktopPane.add( jif2 );
+        desktopPane.add( jif3 );
+        jif1.setVisible( true );
+        jif2.setVisible( true );
+        jif3.setVisible( true );
         
         setExtendedState( MAXIMIZED_BOTH );
         
@@ -42,8 +50,8 @@ public class MainWindow extends javax.swing.JFrame {
 
         toolbar = new javax.swing.JToolBar();
         btnDFA = new javax.swing.JButton();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        btnNFA = new javax.swing.JButton();
+        btnENFA = new javax.swing.JButton();
         filler = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(32767, 0));
         btnAbout = new javax.swing.JButton();
         desktopPane = new javax.swing.JDesktopPane();
@@ -65,19 +73,29 @@ public class MainWindow extends javax.swing.JFrame {
         });
         toolbar.add(btnDFA);
 
-        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/davidbuzatto/jaas/gui/icons/nfaBig.png"))); // NOI18N
-        jButton1.setText("NFA");
-        jButton1.setFocusable(false);
-        jButton1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        toolbar.add(jButton1);
+        btnNFA.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/davidbuzatto/jaas/gui/icons/nfaBig.png"))); // NOI18N
+        btnNFA.setText("NFA");
+        btnNFA.setFocusable(false);
+        btnNFA.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnNFA.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnNFA.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnNFAActionPerformed(evt);
+            }
+        });
+        toolbar.add(btnNFA);
 
-        jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/davidbuzatto/jaas/gui/icons/enfaBig.png"))); // NOI18N
-        jButton2.setText("\u03b5NFA");
-        jButton2.setFocusable(false);
-        jButton2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton2.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        toolbar.add(jButton2);
+        btnENFA.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/davidbuzatto/jaas/gui/icons/enfaBig.png"))); // NOI18N
+        btnENFA.setText("\u03b5NFA");
+        btnENFA.setFocusable(false);
+        btnENFA.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnENFA.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnENFA.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnENFAActionPerformed(evt);
+            }
+        });
+        toolbar.add(btnENFA);
         toolbar.add(filler);
 
         btnAbout.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/davidbuzatto/jaas/gui/icons/help.png"))); // NOI18N
@@ -123,14 +141,30 @@ public class MainWindow extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnDFAActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDFAActionPerformed
-        JIFDFA jifDFA = new JIFDFA( false );
-        desktopPane.add( jifDFA );
-        jifDFA.setVisible( true );
+        JIFDFA jif = new JIFDFA( true );
+        desktopPane.add( jif );
+        jif.setVisible( true );
     }//GEN-LAST:event_btnDFAActionPerformed
 
     private void btnAboutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAboutActionPerformed
-        JOptionPane.showMessageDialog( this, "Developed by Prof. Dr. David Buzatto\n" + Constants.VERSION, "About...", JOptionPane.INFORMATION_MESSAGE );
+        JOptionPane.showMessageDialog( this, 
+                "Developed by Prof. Dr. David Buzatto\n" + 
+                "To help and motivate my dear students! " + 
+                EmojiParser.parseToUnicode( ":heart:" ) + "\n" +
+                Constants.VERSION, "About...", JOptionPane.INFORMATION_MESSAGE );
     }//GEN-LAST:event_btnAboutActionPerformed
+
+    private void btnNFAActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNFAActionPerformed
+        JIFNFA jif = new JIFNFA( true );
+        desktopPane.add( jif );
+        jif.setVisible( true );
+    }//GEN-LAST:event_btnNFAActionPerformed
+
+    private void btnENFAActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnENFAActionPerformed
+        JIFENFA jif = new JIFENFA( true );
+        desktopPane.add( jif );
+        jif.setVisible( true );
+    }//GEN-LAST:event_btnENFAActionPerformed
 
     /**
      * @param args the command line arguments
@@ -151,10 +185,10 @@ public class MainWindow extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAbout;
     private javax.swing.JButton btnDFA;
+    private javax.swing.JButton btnENFA;
+    private javax.swing.JButton btnNFA;
     private javax.swing.JDesktopPane desktopPane;
     private javax.swing.Box.Filler filler;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
     private javax.swing.JToolBar toolbar;
     // End of variables declaration//GEN-END:variables
 }
