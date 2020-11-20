@@ -331,7 +331,7 @@ public abstract class FiniteAutomaton extends Shape implements Serializable {
                 } else {
                     first = false;
                 }
-                sb.append( String.format( "q%d", i ) );
+                sb.append( states.get( i ) );
             }
         }
         

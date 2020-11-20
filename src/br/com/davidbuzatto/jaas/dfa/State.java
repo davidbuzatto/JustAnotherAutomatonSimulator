@@ -15,17 +15,21 @@ import java.awt.geom.Line2D;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 
 /**
  * 
  * @author David
  */
-public class State extends Shape implements Serializable {
+public class State extends Shape implements Serializable, Comparable<State> {
 
     private int number;
     private boolean initial;
     private boolean finall;
     private List<Transition> transitions;
+    private Set<State> internalStates;
+    private String alias;
     
     private Color strokeColor;
     private Color fillColor;
@@ -87,7 +91,7 @@ public class State extends Shape implements Serializable {
         FontMetrics fm = g2d.getFontMetrics();
         int w = fm.stringWidth( q );
         
-        g2d.drawString( "q" + number, 
+        g2d.drawString( q, 
                 (int) ( xStart + Constants.STATE_RADIUS ) - w / 2, 
                 (int) ( yStart + Constants.STATE_RADIUS ) + 4 );
         
@@ -189,9 +193,67 @@ public class State extends Shape implements Serializable {
         this.selectedFillColor = selectedFillColor;
     }
 
+    public Set<State> getInternalStates() {
+        return internalStates;
+    }
+
+    public void setInternalStates( Set<State> internalStates ) {
+        this.internalStates = internalStates;
+    }
+
+    public String getAlias() {
+        return alias;
+    }
+
+    public void setAlias( String alias ) {
+        this.alias = alias;
+    }
+
+    @Override
+    public int compareTo( State o ) {
+        return this.number - o.number;
+    }
+    
     @Override
     public String toString() {
-        return "q" + number;
+        if ( alias != null ) {
+            return alias;
+        } else if ( internalStates != null ) {
+            String is = internalStates.toString();
+            //return "q" + number + " {" + is.substring( 1, is.length() - 1 ) + "}";
+            return "{" + is.substring( 1, is.length() - 1 ) + "}";
+        } else {
+            return "q" + number;
+        }
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 71 * hash + this.number;
+        hash = 71 * hash + Objects.hashCode( this.internalStates );
+        return hash;
+    }
+
+    @Override
+    public boolean equals( Object obj ) {
+        if ( this == obj ) {
+            return true;
+        }
+        if ( obj == null ) {
+            return false;
+        }
+        if ( getClass() != obj.getClass() ) {
+            return false;
+        }
+        final State other = ( State ) obj;
+        if ( this.number != other.number ) {
+            return false;
+        }
+        if ( !Objects.equals( this.internalStates, other.internalStates ) ) {
+            return false;
+        }
+        return true;
     }
     
 }

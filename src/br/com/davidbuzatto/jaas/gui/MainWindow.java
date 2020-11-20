@@ -24,7 +24,7 @@ public class MainWindow extends javax.swing.JFrame {
         initComponents();
         setTitle( getTitle() + " - " + Constants.VERSION );
         
-        JIFDFA jif1 = new JIFDFA( true );
+        JIFDFA jif1 = new JIFDFA( true, null );
         JIFNFA jif2 = new JIFNFA( true );
         JIFENFA jif3 = new JIFENFA( true );
         
@@ -141,7 +141,7 @@ public class MainWindow extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnDFAActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDFAActionPerformed
-        JIFDFA jif = new JIFDFA( true );
+        JIFDFA jif = new JIFDFA( true, null );
         desktopPane.add( jif );
         jif.setVisible( true );
     }//GEN-LAST:event_btnDFAActionPerformed

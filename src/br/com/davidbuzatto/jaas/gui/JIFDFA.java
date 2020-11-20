@@ -55,19 +55,23 @@ public class JIFDFA extends javax.swing.JInternalFrame {
     /**
      * Creates new form JIFDFA
      */
-    public JIFDFA( boolean createExample ) {
+    public JIFDFA( boolean createExample, DFA dfa ) {
         
         initComponents();
         
         setFrameIcon( new ImageIcon( getClass().getResource( "/br/com/davidbuzatto/jaas/gui/icons/dfa.png" ) ) );
         jifTests.setFrameIcon( new ImageIcon( getClass().getResource( "/br/com/davidbuzatto/jaas/gui/icons/dfa.png" ) ) );
         
-        dfa = new DFA();
-        drawPanel.setMainShape( dfa );
-        
-        if ( createExample ) {
-            createExample( );
+        if ( dfa == null ) {
+            this.dfa = new DFA();
+            if ( createExample ) {
+                createExample( );
+            }
+        } else {
+            this.dfa = dfa;
         }
+        
+        drawPanel.setMainShape( dfa );
         
         drawPanel.repaint();
         

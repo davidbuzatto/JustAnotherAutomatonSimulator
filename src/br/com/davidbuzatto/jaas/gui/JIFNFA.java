@@ -23,18 +23,12 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
-import javax.swing.JCheckBox;
 import javax.swing.JColorChooser;
-import javax.swing.JComponent;
 import javax.swing.JFileChooser;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
-import javax.swing.event.AncestorEvent;
-import javax.swing.event.AncestorListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 /**
@@ -104,6 +98,7 @@ public class JIFNFA extends javax.swing.JInternalFrame {
         btnMove = new javax.swing.JToggleButton();
         sepTool1 = new javax.swing.JToolBar.Separator();
         btnShowFormalDefinition = new javax.swing.JButton();
+        btnShowEquivalentDFA = new javax.swing.JButton();
         sepTool2 = new javax.swing.JToolBar.Separator();
         btnSave = new javax.swing.JButton();
         btnLoad = new javax.swing.JButton();
@@ -241,6 +236,18 @@ public class JIFNFA extends javax.swing.JInternalFrame {
             }
         });
         toolbar.add(btnShowFormalDefinition);
+
+        btnShowEquivalentDFA.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/davidbuzatto/jaas/gui/icons/dfa.png"))); // NOI18N
+        btnShowEquivalentDFA.setToolTipText("Show equivalent DFA");
+        btnShowEquivalentDFA.setFocusable(false);
+        btnShowEquivalentDFA.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnShowEquivalentDFA.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnShowEquivalentDFA.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnShowEquivalentDFAActionPerformed(evt);
+            }
+        });
+        toolbar.add(btnShowEquivalentDFA);
         toolbar.add(sepTool2);
 
         btnSave.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/davidbuzatto/jaas/gui/icons/disk.png"))); // NOI18N
@@ -995,6 +1002,12 @@ public class JIFNFA extends javax.swing.JInternalFrame {
         drawPanel.setTempShape( null );
         drawPanel.repaint();
     }//GEN-LAST:event_btnClearSimulationActionPerformed
+
+    private void btnShowEquivalentDFAActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnShowEquivalentDFAActionPerformed
+        JIFDFA jif = new JIFDFA( true, nfa.constructEquivalentDFA() );
+        getDesktopPane().add( jif );
+        jif.setVisible( true );
+    }//GEN-LAST:event_btnShowEquivalentDFAActionPerformed
     
     private void lookForSelectedState() {
         
@@ -1062,6 +1075,7 @@ public class JIFNFA extends javax.swing.JInternalFrame {
     private javax.swing.JButton btnRunSimulation;
     private javax.swing.JButton btnSave;
     private javax.swing.JButton btnSaveAsImage;
+    private javax.swing.JButton btnShowEquivalentDFA;
     private javax.swing.JButton btnShowFormalDefinition;
     private javax.swing.JButton btnStopSimulation;
     private javax.swing.JButton btnTestStrings;
