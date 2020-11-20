@@ -245,6 +245,7 @@ public class JIFENFA extends javax.swing.JInternalFrame {
         toolbar.add(btnShowFormalDefinition);
 
         btnShowEquivalentDFA.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/davidbuzatto/jaas/gui/icons/dfa.png"))); // NOI18N
+        btnShowEquivalentDFA.setToolTipText("Show equivalent DFA");
         btnShowEquivalentDFA.setFocusable(false);
         btnShowEquivalentDFA.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnShowEquivalentDFA.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
