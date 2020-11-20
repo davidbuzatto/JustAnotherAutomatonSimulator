@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package br.com.davidbuzatto.jaas.dfa;
+package br.com.davidbuzatto.jaas.fa;
 
 import br.com.davidbuzatto.jaas.gui.geom.Shape;
 import br.com.davidbuzatto.jaas.utils.Constants;
@@ -35,6 +35,8 @@ public class State extends Shape implements Serializable, Comparable<State> {
     private Color fillColor;
     private Color selectedStrokeColor;
     private Color selectedFillColor;
+    
+    private boolean mouseOver;
 
     public State( int number, boolean initial, boolean finall, double x, double y ) {
         
@@ -96,6 +98,20 @@ public class State extends Shape implements Serializable, Comparable<State> {
                 (int) ( yStart + Constants.STATE_RADIUS ) + 4 );
         
         
+        if ( mouseOver ) {
+            if ( alias != null ) {
+                if ( internalStates != null ) {
+                    String is = internalStates.toString();
+                    q = "{" + is.substring( 1, is.length() - 1 ) + "}";
+                } else {
+                    q = "q" + number;
+                }
+                g2d.drawString( q, 
+                        (int) xEnd, 
+                        (int) yStart );
+            }
+        }
+        
         g2d.setStroke( Constants.TRANSITION_STROKE );
         
         if ( selected ) {
@@ -143,6 +159,14 @@ public class State extends Shape implements Serializable, Comparable<State> {
 
     public void setFinal( boolean finall ) {
         this.finall = finall;
+    }
+
+    public boolean isMouseOver() {
+        return mouseOver;
+    }
+
+    public void setMouseOver( boolean mouseOver ) {
+        this.mouseOver = mouseOver;
     }
 
     public List<Transition> getTransitions() {
@@ -209,6 +233,13 @@ public class State extends Shape implements Serializable, Comparable<State> {
         this.alias = alias;
     }
 
+    public void setPosition( double x, double y ) {
+        this.xStart = x - Constants.STATE_RADIUS;
+        this.xEnd = x + Constants.STATE_RADIUS;
+        this.yStart = y - Constants.STATE_RADIUS;
+        this.yEnd = y + Constants.STATE_RADIUS;
+    }
+    
     @Override
     public int compareTo( State o ) {
         return this.number - o.number;
@@ -220,7 +251,6 @@ public class State extends Shape implements Serializable, Comparable<State> {
             return alias;
         } else if ( internalStates != null ) {
             String is = internalStates.toString();
-            //return "q" + number + " {" + is.substring( 1, is.length() - 1 ) + "}";
             return "{" + is.substring( 1, is.length() - 1 ) + "}";
         } else {
             return "q" + number;

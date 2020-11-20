@@ -5,8 +5,8 @@
  */
 package br.com.davidbuzatto.jaas.gui;
 
-import br.com.davidbuzatto.jaas.dfa.State;
-import br.com.davidbuzatto.jaas.dfa.Transition;
+import br.com.davidbuzatto.jaas.fa.State;
+import br.com.davidbuzatto.jaas.fa.Transition;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;

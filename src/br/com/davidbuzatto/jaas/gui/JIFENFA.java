@@ -5,11 +5,13 @@
  */
 package br.com.davidbuzatto.jaas.gui;
 
-import br.com.davidbuzatto.jaas.dfa.NFA;
-import br.com.davidbuzatto.jaas.dfa.ProcessingString;
-import br.com.davidbuzatto.jaas.dfa.State;
+import br.com.davidbuzatto.jaas.fa.DFA;
+import br.com.davidbuzatto.jaas.fa.NFA;
+import br.com.davidbuzatto.jaas.fa.ProcessingString;
+import br.com.davidbuzatto.jaas.fa.State;
 import br.com.davidbuzatto.jaas.utils.AppPrefs;
 import br.com.davidbuzatto.jaas.utils.Constants;
+import br.com.davidbuzatto.jaas.utils.Utils;
 import java.awt.Color;
 import java.awt.Font;
 import java.io.File;
@@ -48,6 +50,8 @@ public class JIFENFA extends javax.swing.JInternalFrame {
     
     private State selectedSourceState;
     private State selectedTargetState;
+    
+    private State mouseOverState;
     
     private double xPrev;
     private double yPrev;
@@ -97,6 +101,7 @@ public class JIFENFA extends javax.swing.JInternalFrame {
         itemTransitions = new javax.swing.JMenuItem();
         sepPop2 = new javax.swing.JPopupMenu.Separator();
         itemColor = new javax.swing.JMenuItem();
+        itemAlias = new javax.swing.JMenuItem();
         sepPop3 = new javax.swing.JPopupMenu.Separator();
         itemRemove = new javax.swing.JMenuItem();
         toolbar = new javax.swing.JToolBar();
@@ -168,6 +173,15 @@ public class JIFENFA extends javax.swing.JInternalFrame {
             }
         });
         popupMenu.add(itemColor);
+
+        itemAlias.setText("alias");
+        itemAlias.setToolTipText("");
+        itemAlias.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                itemAliasActionPerformed(evt);
+            }
+        });
+        popupMenu.add(itemAlias);
         popupMenu.add(sepPop3);
 
         itemRemove.setText("remove");
@@ -309,6 +323,9 @@ public class JIFENFA extends javax.swing.JInternalFrame {
         drawPanel.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
             public void mouseDragged(java.awt.event.MouseEvent evt) {
                 drawPanelMouseDragged(evt);
+            }
+            public void mouseMoved(java.awt.event.MouseEvent evt) {
+                drawPanelMouseMoved(evt);
             }
         });
         drawPanel.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -528,25 +545,6 @@ public class JIFENFA extends javax.swing.JInternalFrame {
     private void popupMenuPopupMenuCanceled(javax.swing.event.PopupMenuEvent evt) {//GEN-FIRST:event_popupMenuPopupMenuCanceled
         clearSelectedStates();
     }//GEN-LAST:event_popupMenuPopupMenuCanceled
-
-    private void clearSelectedStates() {
-        
-        if ( selectedState != null ) {
-            selectedState.setSelected( false );
-            selectedState = null;
-        }
-        if ( selectedSourceState != null ) {
-            selectedSourceState.setSelected( false );
-            selectedSourceState = null;
-        }
-        if ( selectedTargetState != null ) {
-            selectedTargetState.setSelected( false );
-            selectedTargetState = null;
-        }
-        
-        drawPanel.repaint();
-        
-    }
 
     private void btnAddStateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddStateActionPerformed
         clearSelectedStates();
@@ -993,7 +991,13 @@ public class JIFENFA extends javax.swing.JInternalFrame {
                         Color cc = s.getStrokeColor();
 
                         //s.setStrokeColor( Color.RED );
-                        s.setSelected( true );
+                        List<State> selectedStates = new ArrayList<>();
+                        for ( State ns : enfa.getStates() ) {
+                            if ( s.getInternalStates().contains( ns ) ) {
+                                selectedStates.add( ns );
+                                ns.setSelected( true );
+                            }
+                        }
                         drawPanel.repaint();
 
                         try {
@@ -1002,7 +1006,9 @@ public class JIFENFA extends javax.swing.JInternalFrame {
                         }
 
                         //s.setStrokeColor( cc );
-                        s.setSelected( false );
+                        for ( State ns : selectedStates ) {
+                            ns.setSelected( false );
+                        }
                         drawPanel.repaint();
 
                         if ( currentStateIndex >= simulationList.size() ) {
@@ -1052,10 +1058,59 @@ public class JIFENFA extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnClearSimulationActionPerformed
 
     private void btnShowEquivalentDFAActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnShowEquivalentDFAActionPerformed
-        JIFDFA jif = new JIFDFA( true, enfa.constructEquivalentDFA() );
-        getDesktopPane().add( jif );
-        jif.setVisible( true );
+        
+        try {
+            
+            DFA dfa = enfa.constructEquivalentDFA();
+            JIFDFA jif = new JIFDFA( true, dfa );
+            getDesktopPane().add( jif );
+            
+            Utils.organize( dfa, jif.getDrawPanel().getWidth() / 2, jif.getDrawPanel().getHeight() / 2, 200 );
+            
+            jif.setVisible( true );
+            
+        } catch ( IllegalStateException exc ) {
+            JOptionPane.showMessageDialog( this, exc.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE );
+        }
+        
     }//GEN-LAST:event_btnShowEquivalentDFAActionPerformed
+
+    private void itemAliasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemAliasActionPerformed
+        
+        String alias = JOptionPane.showInputDialog( 
+                this, 
+                String.format( "\"%s\" alias:", selectedState ) );
+        
+        if ( alias != null && !alias.isBlank()) {
+            selectedState.setAlias( alias.trim() );
+        } else {
+            selectedState.setAlias( null );
+        }
+        
+        clearSelectedStates();
+        drawPanel.repaint();
+        
+    }//GEN-LAST:event_itemAliasActionPerformed
+
+    private void drawPanelMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_drawPanelMouseMoved
+        
+        if ( selectedState == null ) {
+            
+            if ( mouseOverState != null ) {
+                mouseOverState.setMouseOver( false );
+            }
+            
+            mouseOverState = enfa.getInterceptedState( evt.getX(), evt.getY() );
+            
+            if ( mouseOverState != null ) {
+                mouseOverState.setMouseOver( true );
+            }
+            
+            drawPanel.repaint();
+            
+        }
+        
+    }//GEN-LAST:event_drawPanelMouseMoved
     
     private void lookForSelectedState() {
         
@@ -1094,6 +1149,29 @@ public class JIFENFA extends javax.swing.JInternalFrame {
         btnRunSimulation.setEnabled( enable );
         btnStopSimulation.setEnabled( enable );
         btnClearSimulation.setEnabled( enable );
+        
+    }
+    
+    private void clearSelectedStates() {
+        
+        if ( selectedState != null ) {
+            selectedState.setSelected( false );
+            selectedState = null;
+        }
+        if ( selectedSourceState != null ) {
+            selectedSourceState.setSelected( false );
+            selectedSourceState = null;
+        }
+        if ( selectedTargetState != null ) {
+            selectedTargetState.setSelected( false );
+            selectedTargetState = null;
+        }
+        if ( mouseOverState != null ) {
+            mouseOverState.setMouseOver( false );
+            mouseOverState = null;
+        }
+        
+        drawPanel.repaint();
         
     }
     
@@ -1141,6 +1219,7 @@ public class JIFENFA extends javax.swing.JInternalFrame {
     private javax.swing.JButton btnStopSimulation;
     private javax.swing.JButton btnTestStrings;
     private br.com.davidbuzatto.jaas.gui.DrawPanel drawPanel;
+    private javax.swing.JMenuItem itemAlias;
     private javax.swing.JMenuItem itemColor;
     private javax.swing.JMenuItem itemFinal;
     private javax.swing.JMenuItem itemInitial;

@@ -5,7 +5,7 @@
  */
 package br.com.davidbuzatto.jaas.gui;
 
-import br.com.davidbuzatto.jaas.dfa.FiniteAutomaton;
+import br.com.davidbuzatto.jaas.fa.FiniteAutomaton;
 import com.formdev.flatlaf.FlatDarkLaf;
 
 /**

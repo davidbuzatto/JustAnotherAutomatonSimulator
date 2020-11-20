@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package br.com.davidbuzatto.jaas.dfa;
+package br.com.davidbuzatto.jaas.fa;
 
 import br.com.davidbuzatto.jaas.gui.TransitionFunctionTableModel;
 import br.com.davidbuzatto.jaas.gui.geom.Shape;
@@ -216,6 +216,10 @@ public abstract class FiniteAutomaton extends Shape implements Serializable {
         return newState;
         
     }
+
+    public List<State> getStates() {
+        return states;
+    }
     
     public void removeState( State state ) {
         
@@ -348,6 +352,7 @@ public abstract class FiniteAutomaton extends Shape implements Serializable {
                 symbols.add( t.getSymbol() );
             }
         }
+        symbols.remove( '\0' );
         return symbols;
     }
     

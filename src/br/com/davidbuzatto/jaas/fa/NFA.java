@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package br.com.davidbuzatto.jaas.dfa;
+package br.com.davidbuzatto.jaas.fa;
 
 import br.com.davidbuzatto.jaas.gui.TransitionFunctionTableModel;
 import java.io.Serializable;
@@ -49,55 +49,8 @@ public class NFA extends FiniteAutomaton implements Serializable {
     
     @Override
     public boolean accepts( String string, List<State> stepByStepList ) throws IllegalStateException {
-        
-        if ( initial == null ) {
-            throw new IllegalStateException( 
-                    "This NFA doesn't have an initial state!" );
-        }
-        
-        if ( countFinalStates() == 0 ) {
-            throw new IllegalStateException( 
-                    "This NFA doesn't have at least one final state!" );
-        }
-        
-        boolean found;
-        int acceptedSymbols = 0;
-        State current = initial;
-        
-        if ( stepByStepList != null ) {
-            stepByStepList.add( current );
-        }
-        
-        for ( char c : string.toCharArray() ) {
-            
-            found = false;
-            
-            for ( Transition t : current.getTransitions() ) {
-                
-                if ( t.getSymbol() == c ) {
-                    
-                    current = t.getTarget();
-                    found = true;
-                    acceptedSymbols++;
-                    
-                    if ( stepByStepList != null ) {
-                        stepByStepList.add( current );
-                    }
-                    
-                    break;
-                    
-                }
-                
-            }
-            
-            if ( !found ) {
-                return false;
-            }
-
-        }
-        
-        return current.isFinal() && acceptedSymbols == string.length();
-        
+        DFA dfa = constructEquivalentDFA();
+        return dfa.accepts( string, stepByStepList );
     }
         
     @Override
@@ -282,8 +235,20 @@ public class NFA extends FiniteAutomaton implements Serializable {
         
     }
     
-    public DFA constructEquivalentDFA() {
+    public DFA constructEquivalentDFA() throws IllegalStateException {
         
+        if ( initial == null ) {
+            throw new IllegalStateException( 
+                    "This NFA doesn't have an initial state!" );
+        }
+        
+        if ( countFinalStates() == 0 ) {
+            throw new IllegalStateException( 
+                    "This NFA doesn't have at least one final state!" );
+        }
+        
+        // pretty naive algorithm... it really needs to be improved,
+        // but not now :P
         DFA dfa = new DFA();
         Queue<State> queue = new ArrayDeque<>();
         Set<State> processed = new HashSet<>();
