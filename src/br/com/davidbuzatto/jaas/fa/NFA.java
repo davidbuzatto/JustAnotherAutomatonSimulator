@@ -57,7 +57,7 @@ public class NFA extends FiniteAutomaton implements Serializable {
     public String generateTransitionFunctionRep() {
         
         StringBuilder sb = new StringBuilder();
-        Set<Character> symbols = collectSymbols();
+        Set<Character> symbols = collectSymbols( false );
         String line = generateLine( symbols.size() + 1 );
         
         sb.append( "\u03B4:\t" );
@@ -132,9 +132,10 @@ public class NFA extends FiniteAutomaton implements Serializable {
     public TransitionFunctionTableModel createTransitionFunctionTableModel() {
         
         TransitionFunctionTableModel tm = new TransitionFunctionTableModel();
-        Set<Character> symbols = collectSymbols();
+        Set<Character> symbols = collectSymbols( false );
         
         for ( char s : symbols ) {
+            System.out.println( s );
             tm.getSymbols().add( String.valueOf( s ) );
         }
         
@@ -253,7 +254,7 @@ public class NFA extends FiniteAutomaton implements Serializable {
         Queue<State> queue = new ArrayDeque<>();
         Set<State> processed = new HashSet<>();
         Set<State> finalStates = new HashSet<>();
-        Set<Character> symbols = collectSymbols();
+        Set<Character> symbols = collectSymbols( true );
         char aliasC = 'A';
         
         discoverEcloses();

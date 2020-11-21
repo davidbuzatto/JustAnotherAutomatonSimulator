@@ -24,7 +24,7 @@ public class MainWindow extends javax.swing.JFrame {
         initComponents();
         setTitle( getTitle() + " - " + Constants.VERSION );
         
-        JIFDFA jif1 = new JIFDFA( true, null );
+        /*JIFDFA jif1 = new JIFDFA( true, null );
         JIFNFA jif2 = new JIFNFA( true );
         JIFENFA jif3 = new JIFENFA( true );
         
@@ -33,7 +33,7 @@ public class MainWindow extends javax.swing.JFrame {
         desktopPane.add( jif3 );
         jif1.setVisible( true );
         jif2.setVisible( true );
-        jif3.setVisible( true );
+        jif3.setVisible( true );*/
         
         setExtendedState( MAXIMIZED_BOTH );
         

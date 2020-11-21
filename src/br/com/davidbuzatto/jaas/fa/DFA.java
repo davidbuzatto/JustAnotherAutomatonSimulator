@@ -92,7 +92,7 @@ public class DFA extends FiniteAutomaton implements Serializable {
     public String generateTransitionFunctionRep() {
         
         StringBuilder sb = new StringBuilder();
-        Set<Character> symbols = collectSymbols();
+        Set<Character> symbols = collectSymbols( true );
         String line = generateLine( symbols.size() + 1 );
         
         sb.append( "\u03B4:\t" );
@@ -157,7 +157,7 @@ public class DFA extends FiniteAutomaton implements Serializable {
     public TransitionFunctionTableModel createTransitionFunctionTableModel() {
         
         TransitionFunctionTableModel tm = new TransitionFunctionTableModel();
-        Set<Character> symbols = collectSymbols();
+        Set<Character> symbols = collectSymbols( true );
         
         for ( char s : symbols ) {
             tm.getSymbols().add( String.valueOf( s ) );

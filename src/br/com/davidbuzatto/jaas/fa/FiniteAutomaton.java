@@ -7,18 +7,11 @@ package br.com.davidbuzatto.jaas.fa;
 
 import br.com.davidbuzatto.jaas.gui.TransitionFunctionTableModel;
 import br.com.davidbuzatto.jaas.gui.geom.Shape;
-import br.com.davidbuzatto.jaas.utils.Constants;
-import java.awt.FontMetrics;
 import java.awt.Graphics2D;
-import java.awt.geom.Point2D;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.ListIterator;
-import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -31,9 +24,11 @@ public abstract class FiniteAutomaton extends Shape implements Serializable {
     protected int stateNumberCount;
     protected State initial;
     protected List<State> states;
+    protected List<DrawingTransition> drawingTransitions;
     
     public FiniteAutomaton() {
         states = new ArrayList<>();
+        drawingTransitions = new ArrayList<>();
     }
     
     @Override
@@ -41,17 +36,9 @@ public abstract class FiniteAutomaton extends Shape implements Serializable {
         
         g2d = (Graphics2D) g2d.create();
         
-        processAndDrawTransitionSymbols( g2d );
-        
-        Set<String> alreadyDrawnTransitions = new HashSet<>();
-        
         for ( State s : states ) {
-            for ( Transition t : s.getTransitions() ) {
-                String tr = String.format( "%s-%s", t.getSource(), t.getTarget() );
-                if ( !alreadyDrawnTransitions.contains( tr ) ) {
-                    t.draw( g2d );
-                    alreadyDrawnTransitions.add( tr );
-                }
+            for ( DrawingTransition dt : s.getDrawingTransitions() ) {
+                dt.draw( g2d );
             }
         }
         
@@ -60,120 +47,6 @@ public abstract class FiniteAutomaton extends Shape implements Serializable {
         }
         
         g2d.dispose();
-        
-    }
-
-    private void processAndDrawTransitionSymbols( Graphics2D g2d ) {
-        
-        Map<String, Set<Character>> hm = new HashMap<>();
-        Map<String, Point2D.Double> hmp = new HashMap<>();
-        
-        for ( State s : states ) {
-            
-            for ( Transition t : s.getTransitions() ) {
-                
-                String key = String.format( "%s-%s", t.getSource(), t.getTarget() );
-                
-                if ( !hm.containsKey( key ) ) {
-                    hm.put( key, new TreeSet<>( new Comparator<Character>(){
-                        @Override
-                        public int compare( Character o1, Character o2 ) {
-                            if ( o1 == '\u03B5' && o2 == '\u03B5' ) {
-                                return 0;
-                            } else if ( o1 == '\u03B5' ) {
-                                return -1;
-                            } else if ( o2 == '\u03B5' ) {
-                                return -1;
-                            } else {
-                                return o1.compareTo( o2 );
-                            }
-                        }
-                    }));
-                }
-                
-                if ( !hmp.containsKey( key ) ) {
-                    
-                    State source = t.getSource();
-                    State target = t.getTarget();
-                    
-                    double angle = Math.atan2( target.getYStartD() + Constants.STATE_RADIUS - ( source.getYStartD() + Constants.STATE_RADIUS ),
-                            target.getXStartD() + Constants.STATE_RADIUS - ( source.getXStartD() + Constants.STATE_RADIUS ) );
-                    double sAngle = Math.PI / 2;
-            
-                    Point2D.Double midPoint = new Point2D.Double(
-                            source.getXEndD() + ( target.getXStartD() - source.getXEndD() ) / 2,
-                            source.getYEndD() + ( target.getYStartD() - source.getYEndD() ) / 2 );
-            
-                    Point2D.Double controlPoint = new Point2D.Double( 
-                            midPoint.x + Math.cos( angle - sAngle ) * 40,
-                            midPoint.y + Math.sin( angle - sAngle ) * 40 );
-                    
-                    /*g2d.setColor( Color.RED );
-                    g2d.fillRect( (int) (midPoint.x),
-                                  (int) (midPoint.y), 5, 5 );
-                    g2d.setColor( Color.BLUE );
-                    g2d.fillRect( (int) (controlPoint.x),
-                                  (int) (controlPoint.y), 5, 5 );
-                    g2d.setColor( Color.BLACK );*/
-                    
-                    double x;
-                    double y;
-                    
-                    if ( source.equals( target ) ) {
-                        
-                        x = (int) ( source.getXStartD() + Constants.STATE_RADIUS );
-                        y = (int) ( source.getYStartD() - Constants.STATE_RADIUS + 5 );
-                        
-                    } else {
-                        
-                        /*x = target.getXStartD() > source.getXEndD() ? 
-                            source.getXEndD() + ( target.getXStartD() - source.getXEndD() ) / 2 :
-                            target.getXEndD() + ( source.getXStartD() - target.getXEndD() ) / 2; 
-                        y = target.getYStartD() > source.getYEndD() ? 
-                            source.getYEndD() + ( target.getYStartD() - source.getYEndD() ) / 2 - 5:
-                            target.getYEndD() + ( source.getYStartD() - target.getYEndD() ) / 2 - 5;*/
-                        x = controlPoint.x; 
-                        y = controlPoint.y;
-                        
-                    }
-                    
-                    hmp.put( key, new Point2D.Double( x, y ) );
-                    
-                }
-                
-                if ( t.getSymbol() == '\0' ) {
-                    hm.get( key ).add( '\u03B5' );
-                } else {
-                    hm.get( key ).add( t.getSymbol() );
-                }
-                
-            }
-            
-        }
-        
-        g2d.setFont( Constants.TRANSITION_FONT );
-        FontMetrics fm = g2d.getFontMetrics();
-        
-        g2d.setColor( Constants.TRANSITION_STROKE_COLOR );
-        
-        for ( Map.Entry<String, Set<Character>> e : hm.entrySet() ) {
-            
-            Point2D.Double p = hmp.get( e.getKey() );
-            String label = e.getValue().toString();
-            label = label.substring( 1, label.length() - 1 );
-            
-            if ( e.getValue().size() > 3 ) {
-                int is = label.indexOf( ", ", label.indexOf( ", " ) + 1 );
-                if ( is != -1 ) {
-                    label = label.substring( 0, is + 1 ) + "..., " + label.substring( label.lastIndexOf( " " ) + 1 );
-                }
-            }
-            
-            int w = fm.stringWidth( label );
-            
-            g2d.drawString( label, (int) ( p.x - w / 2 ), (int) p.y );
-            
-        }
         
     }
     
@@ -194,6 +67,20 @@ public abstract class FiniteAutomaton extends Shape implements Serializable {
                 return state;
             }
             
+        }
+        
+        return null;
+        
+    }
+    
+    public DrawingTransition getInterceptedDrawingTransition( double x, double y ) {
+        
+        for ( State s : states ) {
+            for ( DrawingTransition dt : s.getDrawingTransitions() ) {
+                    if ( dt.intercepts( x, y ) ) {
+                    return dt;
+                }
+            }
         }
         
         return null;
@@ -301,7 +188,7 @@ public abstract class FiniteAutomaton extends Shape implements Serializable {
         sb.append( "\u03A3 = { " );
         boolean first = true;
         
-        for ( char c : collectSymbols() ) {
+        for ( char c : collectSymbols( true ) ) {
             if ( !first ) {
                 sb.append( ", " );
             } else {
@@ -345,14 +232,17 @@ public abstract class FiniteAutomaton extends Shape implements Serializable {
         
     }
     
-    protected Set<Character> collectSymbols() {
+    protected Set<Character> collectSymbols( boolean removeEpsilon ) {
         Set<Character> symbols = new TreeSet<>();
         for ( State s : states ) {
             for ( Transition t : s.getTransitions() ) {
                 symbols.add( t.getSymbol() );
             }
         }
-        symbols.remove( '\0' );
+        if ( removeEpsilon ) {
+            symbols.remove( '\0' );
+            symbols.remove( '\u03B5' );
+        }
         return symbols;
     }
     

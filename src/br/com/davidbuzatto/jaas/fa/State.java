@@ -28,11 +28,10 @@ public class State extends Shape implements Serializable, Comparable<State> {
     private boolean initial;
     private boolean finall;
     private List<Transition> transitions;
+    private List<DrawingTransition> drawingTransitions;
     private Set<State> internalStates;
     private String alias;
     
-    private Color strokeColor;
-    private Color fillColor;
     private Color selectedStrokeColor;
     private Color selectedFillColor;
     
@@ -50,6 +49,7 @@ public class State extends Shape implements Serializable, Comparable<State> {
         this.yEnd = y + Constants.STATE_RADIUS;
         
         this.transitions = new ArrayList<>();
+        this.drawingTransitions = new ArrayList<>();
         
         strokeColor = Constants.STATE_STROKE_COLOR;
         fillColor = Constants.STATE_FILL_COLOR;
@@ -67,6 +67,8 @@ public class State extends Shape implements Serializable, Comparable<State> {
         
         if ( selected ) {
             g2d.setColor( selectedFillColor );
+        } else if ( mouseOver ) {
+            g2d.setColor( Constants.MOUSE_OVER_STATE_FILL_COLOR );
         } else {
             g2d.setColor( fillColor );
         }
@@ -76,6 +78,8 @@ public class State extends Shape implements Serializable, Comparable<State> {
         
         if ( selected ) {
             g2d.setColor( selectedStrokeColor );
+        } else if ( mouseOver ) {
+            g2d.setColor( Constants.MOUSE_OVER_STATE_STROKE_COLOR );
         } else {
             g2d.setColor( strokeColor );
         }
@@ -99,13 +103,44 @@ public class State extends Shape implements Serializable, Comparable<State> {
         
         
         if ( mouseOver ) {
+            
             if ( alias != null ) {
+                
                 if ( internalStates != null ) {
                     String is = internalStates.toString();
                     q = "{" + is.substring( 1, is.length() - 1 ) + "}";
                 } else {
                     q = "q" + number;
                 }
+                
+                w = fm.stringWidth( q );
+                
+                if ( selected ) {
+                    g2d.setColor( Constants.SELECTED_STATE_FILL_COLOR );
+                } else {
+                    g2d.setColor( Constants.MOUSE_OVER_STATE_FILL_COLOR );
+                }
+                
+                g2d.fillRoundRect( (int) xEnd - 5, 
+                                   (int) yStart - 15, 
+                                   w + 10, 
+                                   20, 
+                                   10, 
+                                   10 );
+                
+                if ( selected ) {
+                    g2d.setColor( Constants.SELECTED_STATE_STROKE_COLOR );
+                } else {
+                    g2d.setColor( Constants.MOUSE_OVER_STATE_STROKE_COLOR );
+                }
+                
+                g2d.drawRoundRect( (int) xEnd - 5, 
+                                   (int) yStart - 15, 
+                                   w + 10, 
+                                   20, 
+                                   10, 
+                                   10 );
+                
                 g2d.drawString( q, 
                         (int) xEnd, 
                         (int) yStart );
@@ -138,11 +173,49 @@ public class State extends Shape implements Serializable, Comparable<State> {
     }
     
     public void addTransition( State target, char symbol ) {
+        
         transitions.add( new Transition( this, target, symbol ) );
+        
+        DrawingTransition dt = null;
+        
+        for ( DrawingTransition d : drawingTransitions ) {
+            if ( d.getTarget().equals( target ) ) {
+                dt = d;
+                break;
+            }
+        }
+        
+        if ( dt != null ) {
+            dt.addSymbol( symbol );
+        } else {
+            dt = new DrawingTransition( this, target, symbol );
+            drawingTransitions.add( dt );
+        }
+        
     }
     
     public void removeTransition( Transition transition ) {
+        
         transitions.remove( transition );
+        
+        DrawingTransition dt = null;
+        
+        for ( DrawingTransition d : drawingTransitions ) {
+            if ( d.getTarget().equals( transition.getTarget() ) ) {
+                dt = d;
+                break;
+            }
+        }
+        
+        if ( dt != null ) {
+            dt.removeSymbol( transition.getSymbol() );
+            if ( dt.getSymbols().isEmpty() ) {
+                drawingTransitions.remove( dt );
+            }
+        } else {
+            // should not reach here...
+        }
+        
     }
 
     public boolean isInitial() {
@@ -177,6 +250,14 @@ public class State extends Shape implements Serializable, Comparable<State> {
         this.transitions = transitions;
     }
 
+    public List<DrawingTransition> getDrawingTransitions() {
+        return drawingTransitions;
+    }
+
+    public void setDrawingTransitions( List<DrawingTransition> drawingTransitions ) {
+        this.drawingTransitions = drawingTransitions;
+    }
+
     public int getNumber() {
         return number;
     }
@@ -189,16 +270,8 @@ public class State extends Shape implements Serializable, Comparable<State> {
         return strokeColor;
     }
 
-    public void setStrokeColor( Color strokeColor ) {
-        this.strokeColor = strokeColor;
-    }
-
     public Color getFillColor() {
         return fillColor;
-    }
-
-    public void setFillColor( Color fillColor ) {
-        this.fillColor = fillColor;
     }
 
     public Color getSelectedStrokeColor() {

@@ -6,6 +6,7 @@
 package br.com.davidbuzatto.jaas.gui;
 
 import br.com.davidbuzatto.jaas.fa.DFA;
+import br.com.davidbuzatto.jaas.fa.DrawingTransition;
 import br.com.davidbuzatto.jaas.fa.NFA;
 import br.com.davidbuzatto.jaas.fa.ProcessingString;
 import br.com.davidbuzatto.jaas.fa.State;
@@ -47,11 +48,13 @@ public class JIFENFA extends javax.swing.JInternalFrame {
 
     private NFA enfa;
     private State selectedState;
+    private DrawingTransition selectedDrawingTransition;
     
     private State selectedSourceState;
     private State selectedTargetState;
     
     private State mouseOverState;
+    private DrawingTransition mouseOverDrawingTransition;
     
     private double xPrev;
     private double yPrev;
@@ -328,6 +331,11 @@ public class JIFENFA extends javax.swing.JInternalFrame {
                 drawPanelMouseMoved(evt);
             }
         });
+        drawPanel.addMouseWheelListener(new java.awt.event.MouseWheelListener() {
+            public void mouseWheelMoved(java.awt.event.MouseWheelEvent evt) {
+                drawPanelMouseWheelMoved(evt);
+            }
+        });
         drawPanel.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
                 drawPanelMousePressed(evt);
@@ -508,7 +516,7 @@ public class JIFENFA extends javax.swing.JInternalFrame {
             
         }
         
-        clearSelectedStates();
+        clearSelectedShapes();
         drawPanel.repaint();
         
     }//GEN-LAST:event_itemInitialActionPerformed
@@ -519,7 +527,7 @@ public class JIFENFA extends javax.swing.JInternalFrame {
             selectedState.setFinal( !selectedState.isFinal() );
         }
         
-        clearSelectedStates();
+        clearSelectedShapes();
         drawPanel.repaint();
         
     }//GEN-LAST:event_itemFinalActionPerformed
@@ -535,7 +543,7 @@ public class JIFENFA extends javax.swing.JInternalFrame {
                 enfa.removeState( selectedState );
             }
 
-            clearSelectedStates();
+            clearSelectedShapes();
             drawPanel.repaint();
             
         }
@@ -543,19 +551,19 @@ public class JIFENFA extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_itemRemoveActionPerformed
 
     private void popupMenuPopupMenuCanceled(javax.swing.event.PopupMenuEvent evt) {//GEN-FIRST:event_popupMenuPopupMenuCanceled
-        clearSelectedStates();
+        clearSelectedShapes();
     }//GEN-LAST:event_popupMenuPopupMenuCanceled
 
     private void btnAddStateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddStateActionPerformed
-        clearSelectedStates();
+        clearSelectedShapes();
     }//GEN-LAST:event_btnAddStateActionPerformed
 
     private void btnAddTransitionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddTransitionActionPerformed
-        clearSelectedStates();
+        clearSelectedShapes();
     }//GEN-LAST:event_btnAddTransitionActionPerformed
 
     private void btnMoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMoveActionPerformed
-        clearSelectedStates();
+        clearSelectedShapes();
     }//GEN-LAST:event_btnMoveActionPerformed
 
     private void drawPanelMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_drawPanelMousePressed
@@ -567,9 +575,9 @@ public class JIFENFA extends javax.swing.JInternalFrame {
 
             if ( SwingUtilities.isLeftMouseButton( evt ) ) {
 
-                lookForSelectedState();
+                lookForSelectedShapes();
 
-                 if ( btnAddState.isSelected() ) {
+                if ( btnAddState.isSelected() ) {
 
                     enfa.addState( false, false, evt.getX(), evt.getY() );
 
@@ -670,7 +678,7 @@ public class JIFENFA extends javax.swing.JInternalFrame {
 
                 } else if ( btnMove.isSelected() ) {
 
-                    if ( selectedState != null ) {
+                    if ( selectedState != null || selectedDrawingTransition != null ) {
 
                         xPrev = xPressed;
                         yPrev = yPressed;
@@ -681,8 +689,8 @@ public class JIFENFA extends javax.swing.JInternalFrame {
 
             } else if ( SwingUtilities.isRightMouseButton( evt ) ) {
 
-                clearSelectedStates();
-                lookForSelectedState();
+                clearSelectedShapes();
+                lookForSelectedShapes();
 
                 if ( selectedState != null ) {
 
@@ -719,7 +727,7 @@ public class JIFENFA extends javax.swing.JInternalFrame {
             if ( SwingUtilities.isLeftMouseButton( evt ) ) {
 
                 if ( !btnAddTransition.isSelected() ) {
-                    clearSelectedStates();
+                    clearSelectedShapes();
                 }
 
                 drawPanel.repaint();
@@ -740,9 +748,14 @@ public class JIFENFA extends javax.swing.JInternalFrame {
 
                 } else if ( btnAddTransition.isSelected() ) {
 
-                } else if ( btnMove.isSelected() && selectedState != null ) {
-
-                    selectedState.move( evt.getX() - xPrev, evt.getY() - yPrev );
+                } else if ( btnMove.isSelected() && ( selectedState != null || selectedDrawingTransition != null ) ) {
+                    
+                    if ( selectedState != null ) {
+                        selectedState.move( evt.getX() - xPrev, evt.getY() - yPrev );
+                    }
+                    if ( selectedDrawingTransition != null ) {
+                        selectedDrawingTransition.move( evt.getX() - xPrev, evt.getY() - yPrev );
+                    }
 
                     xPrev = evt.getX();
                     yPrev = evt.getY();
@@ -938,7 +951,7 @@ public class JIFENFA extends javax.swing.JInternalFrame {
         ChangeTransitionsDialog ctd = new ChangeTransitionsDialog( null, selectedState, true );
         ctd.setVisible( true );
         
-        clearSelectedStates();
+        clearSelectedShapes();
         drawPanel.repaint();
         
     }//GEN-LAST:event_itemTransitionsActionPerformed
@@ -951,7 +964,7 @@ public class JIFENFA extends javax.swing.JInternalFrame {
             selectedState.setStrokeColor( c );
         }
         
-        clearSelectedStates();
+        clearSelectedShapes();
         drawPanel.repaint();
         
     }//GEN-LAST:event_itemColorActionPerformed
@@ -1046,10 +1059,8 @@ public class JIFENFA extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnRunSimulationActionPerformed
 
     private void btnStopSimulationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnStopSimulationActionPerformed
-        
         runningSimulation = false;
         changeGUI( true );
-        
     }//GEN-LAST:event_btnStopSimulationActionPerformed
 
     private void btnClearSimulationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClearSimulationActionPerformed
@@ -1087,7 +1098,7 @@ public class JIFENFA extends javax.swing.JInternalFrame {
             selectedState.setAlias( null );
         }
         
-        clearSelectedStates();
+        clearSelectedShapes();
         drawPanel.repaint();
         
     }//GEN-LAST:event_itemAliasActionPerformed
@@ -1110,14 +1121,43 @@ public class JIFENFA extends javax.swing.JInternalFrame {
             
         }
         
+        if ( mouseOverDrawingTransition != null ) {
+            mouseOverDrawingTransition.setMouseOver( false );
+        }
+
+        mouseOverDrawingTransition = enfa.getInterceptedDrawingTransition( evt.getX(), evt.getY() );
+
+        if ( mouseOverDrawingTransition != null ) {
+            mouseOverDrawingTransition.setMouseOver( true );
+            drawPanel.repaint();
+        }
+        
     }//GEN-LAST:event_drawPanelMouseMoved
+
+    private void drawPanelMouseWheelMoved(java.awt.event.MouseWheelEvent evt) {//GEN-FIRST:event_drawPanelMouseWheelMoved
+        
+        if ( mouseOverDrawingTransition != null ) {
+            if ( evt.getPreciseWheelRotation() > 0 ) {
+                mouseOverDrawingTransition.changeControlPointMagnitude( -1 );
+            } else {
+                mouseOverDrawingTransition.changeControlPointMagnitude( 1 );
+            }
+            drawPanel.repaint();
+        }
+        
+    }//GEN-LAST:event_drawPanelMouseWheelMoved
     
-    private void lookForSelectedState() {
+    private void lookForSelectedShapes() {
         
         selectedState = enfa.getInterceptedState( xPressed, yPressed );
+        selectedDrawingTransition = enfa.getInterceptedDrawingTransition( xPressed, yPressed );
         
         if ( selectedState != null ) {
             selectedState.setSelected( true );
+        }
+        
+        if ( selectedDrawingTransition != null ) {
+            selectedDrawingTransition.setSelected( true );
         }
         
     }
@@ -1152,7 +1192,7 @@ public class JIFENFA extends javax.swing.JInternalFrame {
         
     }
     
-    private void clearSelectedStates() {
+    private void clearSelectedShapes() {
         
         if ( selectedState != null ) {
             selectedState.setSelected( false );
@@ -1169,6 +1209,14 @@ public class JIFENFA extends javax.swing.JInternalFrame {
         if ( mouseOverState != null ) {
             mouseOverState.setMouseOver( false );
             mouseOverState = null;
+        }
+        if ( selectedDrawingTransition != null ) {
+            selectedDrawingTransition.setSelected( false );
+            selectedDrawingTransition = null;
+        }
+        if ( mouseOverDrawingTransition != null ) {
+            mouseOverDrawingTransition.setMouseOver( false );
+            mouseOverDrawingTransition = null;
         }
         
         drawPanel.repaint();
