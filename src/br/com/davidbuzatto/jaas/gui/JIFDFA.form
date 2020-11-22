@@ -394,17 +394,19 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Group type="102" attributes="0">
+                      <Group type="103" groupAlignment="1" attributes="0">
+                          <Group type="102" alignment="1" attributes="0">
                               <Component id="lblStringSImulation" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="txtStringSimulation" pref="234" max="32767" attributes="0"/>
                           </Group>
                           <Group type="102" alignment="1" attributes="0">
                               <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
-                              <Component id="btnRunSimulation" min="-2" max="-2" attributes="0"/>
+                              <Component id="btnEvaluateSimulation" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="btnStopSimulation" min="-2" max="-2" attributes="0"/>
+                              <Component id="btnPreviousStep" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="btnNextStep" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="btnClearSimulation" min="-2" max="-2" attributes="0"/>
                           </Group>
@@ -423,9 +425,10 @@
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="btnRunSimulation" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Component id="btnStopSimulation" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="btnEvaluateSimulation" alignment="0" min="-2" max="-2" attributes="0"/>
                           <Component id="btnClearSimulation" min="-2" max="-2" attributes="0"/>
+                          <Component id="btnNextStep" min="-2" max="-2" attributes="0"/>
+                          <Component id="btnPreviousStep" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace pref="50" max="32767" attributes="0"/>
                   </Group>
@@ -440,26 +443,39 @@
             </Component>
             <Component class="javax.swing.JTextField" name="txtStringSimulation">
             </Component>
-            <Component class="javax.swing.JButton" name="btnRunSimulation">
+            <Component class="javax.swing.JButton" name="btnEvaluateSimulation">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/br/com/davidbuzatto/jaas/gui/icons/control_play_blue.png"/>
+                  <Image iconType="3" name="/br/com/davidbuzatto/jaas/gui/icons/accept.png"/>
                 </Property>
-                <Property name="toolTipText" type="java.lang.String" value="run"/>
+                <Property name="toolTipText" type="java.lang.String" value="evaluate"/>
               </Properties>
               <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnRunSimulationActionPerformed"/>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnEvaluateSimulationActionPerformed"/>
               </Events>
             </Component>
-            <Component class="javax.swing.JButton" name="btnStopSimulation">
+            <Component class="javax.swing.JButton" name="btnPreviousStep">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/br/com/davidbuzatto/jaas/gui/icons/control_stop_blue.png"/>
+                  <Image iconType="3" name="/br/com/davidbuzatto/jaas/gui/icons/arrow_left.png"/>
                 </Property>
-                <Property name="toolTipText" type="java.lang.String" value="stop"/>
+                <Property name="toolTipText" type="java.lang.String" value="previous"/>
+                <Property name="enabled" type="boolean" value="false"/>
               </Properties>
               <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnStopSimulationActionPerformed"/>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnPreviousStepActionPerformed"/>
+              </Events>
+            </Component>
+            <Component class="javax.swing.JButton" name="btnNextStep">
+              <Properties>
+                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                  <Image iconType="3" name="/br/com/davidbuzatto/jaas/gui/icons/arrow_right.png"/>
+                </Property>
+                <Property name="toolTipText" type="java.lang.String" value="next"/>
+                <Property name="enabled" type="boolean" value="false"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnNextStepActionPerformed"/>
               </Events>
             </Component>
             <Component class="javax.swing.JButton" name="btnClearSimulation">
@@ -468,6 +484,7 @@
                   <Image iconType="3" name="/br/com/davidbuzatto/jaas/gui/icons/delete.png"/>
                 </Property>
                 <Property name="toolTipText" type="java.lang.String" value="clear"/>
+                <Property name="enabled" type="boolean" value="false"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnClearSimulationActionPerformed"/>

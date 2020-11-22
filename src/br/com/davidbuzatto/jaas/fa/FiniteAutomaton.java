@@ -54,6 +54,13 @@ public abstract class FiniteAutomaton extends Shape implements Serializable {
     public boolean intercepts( double x, double y ) {
         return false;
     }
+
+    @Override
+    public void move( double difX, double difY ) {
+        for ( State s : states ) {
+            s.move( difX, difY );
+        }
+    }
     
     public State getInterceptedState( double x, double y ) {
         

@@ -43,26 +43,31 @@ public class DrawingTransition extends Shape implements Serializable {
     
     private boolean mouseOver;
     
+    private class SymbolsComparator implements Comparator<Character>, Serializable {
+
+        @Override
+        public int compare( Character o1, Character o2 ) {
+            if ( o1 == '\u03B5' && o2 == '\u03B5' ) {
+                return 0;
+            } else if ( o1 == '\u03B5' ) {
+                return -1;
+            } else if ( o2 == '\u03B5' ) {
+                return -1;
+            } else {
+                return o1.compareTo( o2 );
+            }
+        }
+        
+    }
+    
     public DrawingTransition( State source, State target, Character... symbols ) {
         
         this.source = source;
         this.target = target;
-        this.controlPointMagnitude = 40;
+        //this.controlPointMagnitude = 40;
+        this.controlPointMagnitude = 0;
         
-        this.symbols = new  TreeSet<>( new Comparator<Character>(){
-            @Override
-            public int compare( Character o1, Character o2 ) {
-                if ( o1 == '\u03B5' && o2 == '\u03B5' ) {
-                    return 0;
-                } else if ( o1 == '\u03B5' ) {
-                    return -1;
-                } else if ( o2 == '\u03B5' ) {
-                    return -1;
-                } else {
-                    return o1.compareTo( o2 );
-                }
-            }
-        });
+        this.symbols = new TreeSet<>( new SymbolsComparator() );
         this.symbols.addAll( Arrays.<Character>asList( symbols ) );
         
         if ( this.symbols.contains( '\0' ) ) {

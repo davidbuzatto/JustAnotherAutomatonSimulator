@@ -9,6 +9,7 @@ import br.com.davidbuzatto.jaas.fa.DFA;
 import br.com.davidbuzatto.jaas.fa.DrawingTransition;
 import br.com.davidbuzatto.jaas.fa.NFA;
 import br.com.davidbuzatto.jaas.fa.ProcessingString;
+import br.com.davidbuzatto.jaas.fa.ProcessingStringLabelType;
 import br.com.davidbuzatto.jaas.fa.State;
 import br.com.davidbuzatto.jaas.utils.AppPrefs;
 import br.com.davidbuzatto.jaas.utils.Constants;
@@ -56,6 +57,10 @@ public class JIFNFA extends javax.swing.JInternalFrame {
     private double yPressed;
     
     private boolean runningSimulation;
+    private int currentSimulationIndex;
+    private boolean simulationResult;
+    private List<State> simulationSteps;
+    private State currentSimulationState;
     private ProcessingString processingString;
             
     
@@ -122,8 +127,9 @@ public class JIFNFA extends javax.swing.JInternalFrame {
         panelSimulation = new javax.swing.JPanel();
         lblStringSImulation = new javax.swing.JLabel();
         txtStringSimulation = new javax.swing.JTextField();
-        btnRunSimulation = new javax.swing.JButton();
-        btnStopSimulation = new javax.swing.JButton();
+        btnEvaluateSimulation = new javax.swing.JButton();
+        btnPreviousStep = new javax.swing.JButton();
+        btnNextStep = new javax.swing.JButton();
         btnClearSimulation = new javax.swing.JButton();
 
         popupMenu.addPopupMenuListener(new javax.swing.event.PopupMenuListener() {
@@ -392,24 +398,37 @@ public class JIFNFA extends javax.swing.JInternalFrame {
 
         lblStringSImulation.setText("String:");
 
-        btnRunSimulation.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/davidbuzatto/jaas/gui/icons/control_play_blue.png"))); // NOI18N
-        btnRunSimulation.setToolTipText("run");
-        btnRunSimulation.addActionListener(new java.awt.event.ActionListener() {
+        txtStringSimulation.setText("010101");
+
+        btnEvaluateSimulation.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/davidbuzatto/jaas/gui/icons/accept.png"))); // NOI18N
+        btnEvaluateSimulation.setToolTipText("run");
+        btnEvaluateSimulation.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnRunSimulationActionPerformed(evt);
+                btnEvaluateSimulationActionPerformed(evt);
             }
         });
 
-        btnStopSimulation.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/davidbuzatto/jaas/gui/icons/control_stop_blue.png"))); // NOI18N
-        btnStopSimulation.setToolTipText("stop");
-        btnStopSimulation.addActionListener(new java.awt.event.ActionListener() {
+        btnPreviousStep.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/davidbuzatto/jaas/gui/icons/arrow_left.png"))); // NOI18N
+        btnPreviousStep.setToolTipText("run");
+        btnPreviousStep.setEnabled(false);
+        btnPreviousStep.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnStopSimulationActionPerformed(evt);
+                btnPreviousStepActionPerformed(evt);
+            }
+        });
+
+        btnNextStep.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/davidbuzatto/jaas/gui/icons/arrow_right.png"))); // NOI18N
+        btnNextStep.setToolTipText("run");
+        btnNextStep.setEnabled(false);
+        btnNextStep.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnNextStepActionPerformed(evt);
             }
         });
 
         btnClearSimulation.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/davidbuzatto/jaas/gui/icons/delete.png"))); // NOI18N
         btnClearSimulation.setToolTipText("clear");
+        btnClearSimulation.setEnabled(false);
         btnClearSimulation.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnClearSimulationActionPerformed(evt);
@@ -429,9 +448,11 @@ public class JIFNFA extends javax.swing.JInternalFrame {
                         .addComponent(txtStringSimulation, javax.swing.GroupLayout.DEFAULT_SIZE, 234, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelSimulationLayout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(btnRunSimulation)
+                        .addComponent(btnEvaluateSimulation)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnStopSimulation)
+                        .addComponent(btnPreviousStep)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnNextStep)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnClearSimulation)))
                 .addContainerGap())
@@ -445,9 +466,10 @@ public class JIFNFA extends javax.swing.JInternalFrame {
                     .addComponent(txtStringSimulation, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panelSimulationLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btnRunSimulation)
-                    .addComponent(btnStopSimulation)
-                    .addComponent(btnClearSimulation))
+                    .addComponent(btnEvaluateSimulation)
+                    .addComponent(btnClearSimulation)
+                    .addComponent(btnNextStep)
+                    .addComponent(btnPreviousStep))
                 .addContainerGap(50, Short.MAX_VALUE))
         );
 
@@ -662,6 +684,13 @@ public class JIFNFA extends javax.swing.JInternalFrame {
                     popupMenu.show( this, evt.getX() + 20, evt.getY() + 50 );
 
                 }
+                
+                if ( btnMove.isSelected() ) {
+
+                    xPrev = xPressed;
+                    yPrev = yPressed;
+
+                }
 
             }
 
@@ -713,6 +742,17 @@ public class JIFNFA extends javax.swing.JInternalFrame {
 
                 }
 
+            } else if ( SwingUtilities.isRightMouseButton( evt ) ) {
+                
+                if ( btnMove.isSelected() ) {
+                    
+                    nfa.move( evt.getX() - xPrev, evt.getY() - yPrev );
+
+                    xPrev = evt.getX();
+                    yPrev = evt.getY();
+                
+                }
+                
             }
 
             drawPanel.repaint();
@@ -920,85 +960,37 @@ public class JIFNFA extends javax.swing.JInternalFrame {
         
     }//GEN-LAST:event_itemColorActionPerformed
 
-    private void btnRunSimulationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRunSimulationActionPerformed
+    private void btnEvaluateSimulationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEvaluateSimulationActionPerformed
         
         try {
             
+            simulationSteps = new ArrayList<>();
+            simulationResult = nfa.accepts( txtStringSimulation.getText(), simulationSteps );
+            
+            changeGUI( false );
+            btnClearSimulation.setEnabled( true );
+            btnNextStep.setEnabled( true );
             runningSimulation = true;
+
+            processingString = new ProcessingString( 
+                    txtStringSimulation.getText(), 
+                    Constants.PROCESSING_STRING_COLOR, 
+                    Constants.PROCESSING_STRING_CURRENT_SYMBOL_COLOR,
+                    Constants.PROCESSING_STRING_CONTROL_COLOR,
+                    0, 
+                    ProcessingStringLabelType.INTERNAL_STATES,
+                    drawPanel.getWidth() / 2, drawPanel.getHeight() - 10 );
+
+            drawPanel.setTempShape( processingString );
+
+            currentSimulationIndex = 0;
+
+            processingString.setCurrentSymbol( currentSimulationIndex );
+            currentSimulationState = simulationSteps.get( currentSimulationIndex );
+            processingString.setCurrentState( currentSimulationState );
             
-            List<State> simulationList = new ArrayList<>();
-            boolean accepted = nfa.accepts( txtStringSimulation.getText(), simulationList );
-            
-            new Thread( new Runnable() {
-                @Override
-                public void run() {
-                    
-                    changeGUI( false );
-                    btnStopSimulation.setEnabled( true );
-                    
-                    processingString = new ProcessingString( 
-                            txtStringSimulation.getText(), 
-                            Constants.PROCESSING_STRING_COLOR, 
-                            Constants.PROCESSING_STRING_CURRENT_SYMBOL_COLOR,
-                            Constants.PROCESSING_STRING_CONTROL_COLOR,
-                            0, 
-                            drawPanel.getWidth() / 2, drawPanel.getHeight() - 10 );
-                    
-                    drawPanel.setTempShape( processingString );
-                    
-                    int currentStateIndex = 0;
-                    
-                    while ( runningSimulation ) {
-                        
-                        processingString.setCurrentSymbol( currentStateIndex );
-                        State s = simulationList.get( currentStateIndex++ );
-                        Color cc = s.getStrokeColor();
-
-                        //s.setStrokeColor( Color.RED );
-                        List<State> selectedStates = new ArrayList<>();
-                        for ( State ns : nfa.getStates() ) {
-                            if ( s.getInternalStates().contains( ns ) ) {
-                                selectedStates.add( ns );
-                                ns.setSelected( true );
-                            }
-                        }
-                        drawPanel.repaint();
-
-                        try {
-                            Thread.sleep( 1000 );
-                        } catch ( InterruptedException exc ) {
-                        }
-
-                        //s.setStrokeColor( cc );
-                        for ( State ns : selectedStates ) {
-                            ns.setSelected( false );
-                        }
-                        drawPanel.repaint();
-
-                        if ( currentStateIndex >= simulationList.size() ) {
-                            runningSimulation = false;
-                        }
-                        
-                    }
-                    
-                    if ( accepted ) {
-                        processingString.setAccepted( true );
-                        processingString.setColor( Constants.PROCESSING_STRING_ACCEPTED_COLOR );
-                    } else {
-                        processingString.setRejected( true );
-                        processingString.setColor( Constants.PROCESSING_STRING_REJECTED_COLOR );
-                        processingString.setCurrentSymbolColor( Constants.PROCESSING_STRING_REJECTED_CURRENT_SYMBOL_COLOR );
-                        processingString.setControlColor( Constants.PROCESSING_STRING_REJECTED_CONTROL_COLOR );
-                    }
-                    
-                    drawPanel.repaint();
-                    
-                    changeGUI( true );
-                    
-                }
-                
-            }).start();
-            
+            changeInternalStatesSelection( currentSimulationState, true );
+            drawPanel.repaint();
             
         } catch ( IllegalStateException exc ) {
             
@@ -1007,16 +999,26 @@ public class JIFNFA extends javax.swing.JInternalFrame {
             
         }
         
-    }//GEN-LAST:event_btnRunSimulationActionPerformed
-
-    private void btnStopSimulationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnStopSimulationActionPerformed
-        runningSimulation = false;
-        changeGUI( true );
-    }//GEN-LAST:event_btnStopSimulationActionPerformed
+    }//GEN-LAST:event_btnEvaluateSimulationActionPerformed
 
     private void btnClearSimulationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClearSimulationActionPerformed
+        
+        if ( currentSimulationState != null ) {
+            changeInternalStatesSelection( currentSimulationState, false );
+            currentSimulationState = null;
+            processingString.setCurrentState( null );
+        }
+        
         drawPanel.setTempShape( null );
+        runningSimulation = false;
+        
+        changeGUI( true );
+        btnNextStep.setEnabled( false );
+        btnPreviousStep.setEnabled( false );
+        btnClearSimulation.setEnabled( false );
+        
         drawPanel.repaint();
+        
     }//GEN-LAST:event_btnClearSimulationActionPerformed
 
     private void btnShowEquivalentDFAActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnShowEquivalentDFAActionPerformed
@@ -1024,7 +1026,7 @@ public class JIFNFA extends javax.swing.JInternalFrame {
         try {
             
             DFA dfa = nfa.constructEquivalentDFA();
-            JIFDFA jif = new JIFDFA( true, dfa );
+            JIFDFA jif = new JIFDFA( true, dfa, ProcessingStringLabelType.ALIAS );
             getDesktopPane().add( jif );
             
             Utils.organize( dfa, jif.getDrawPanel().getWidth() / 2, jif.getDrawPanel().getHeight() / 2, 200 );
@@ -1056,31 +1058,35 @@ public class JIFNFA extends javax.swing.JInternalFrame {
 
     private void drawPanelMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_drawPanelMouseMoved
         
-        if ( selectedState == null ) {
+        if ( !runningSimulation ) {
             
-            if ( mouseOverState != null ) {
-                mouseOverState.setMouseOver( false );
+            if ( selectedState == null ) {
+
+                if ( mouseOverState != null ) {
+                    mouseOverState.setMouseOver( false );
+                }
+
+                mouseOverState = nfa.getInterceptedState( evt.getX(), evt.getY() );
+
+                if ( mouseOverState != null ) {
+                    mouseOverState.setMouseOver( true );
+                }
+
+                drawPanel.repaint();
+
             }
-            
-            mouseOverState = nfa.getInterceptedState( evt.getX(), evt.getY() );
-            
-            if ( mouseOverState != null ) {
-                mouseOverState.setMouseOver( true );
+
+            if ( mouseOverDrawingTransition != null ) {
+                mouseOverDrawingTransition.setMouseOver( false );
             }
-            
-            drawPanel.repaint();
-            
-        }
+
+            mouseOverDrawingTransition = nfa.getInterceptedDrawingTransition( evt.getX(), evt.getY() );
+
+            if ( mouseOverDrawingTransition != null ) {
+                mouseOverDrawingTransition.setMouseOver( true );
+                drawPanel.repaint();
+            }
         
-        if ( mouseOverDrawingTransition != null ) {
-            mouseOverDrawingTransition.setMouseOver( false );
-        }
-
-        mouseOverDrawingTransition = nfa.getInterceptedDrawingTransition( evt.getX(), evt.getY() );
-
-        if ( mouseOverDrawingTransition != null ) {
-            mouseOverDrawingTransition.setMouseOver( true );
-            drawPanel.repaint();
         }
         
     }//GEN-LAST:event_drawPanelMouseMoved
@@ -1097,6 +1103,99 @@ public class JIFNFA extends javax.swing.JInternalFrame {
         }
         
     }//GEN-LAST:event_drawPanelMouseWheelMoved
+
+    private void btnNextStepActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNextStepActionPerformed
+        
+        processingStringToDefault();
+        btnPreviousStep.setEnabled( true );
+        
+        if ( currentSimulationIndex < simulationSteps.size() - 1 ) {
+            
+            currentSimulationIndex++;
+            changeInternalStatesSelection( currentSimulationState, false );
+
+            processingString.setCurrentSymbol( currentSimulationIndex );
+
+            currentSimulationState = simulationSteps.get( currentSimulationIndex );
+            processingString.setCurrentState( currentSimulationState );
+
+            changeInternalStatesSelection( currentSimulationState, true );
+        
+        }
+        
+        if ( currentSimulationIndex == simulationSteps.size() - 1 ) {
+
+            btnNextStep.setEnabled( false );
+
+            if ( simulationResult ) {
+                processingStringToAccepted();
+            } else {
+                processingStringToRejected();
+            }
+
+        }
+        
+        drawPanel.repaint();
+        
+    }//GEN-LAST:event_btnNextStepActionPerformed
+
+    private void btnPreviousStepActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPreviousStepActionPerformed
+        
+        processingStringToDefault();
+        btnNextStep.setEnabled( true );
+        
+        if ( currentSimulationIndex > 0 ) {
+            
+            currentSimulationIndex--;
+            changeInternalStatesSelection( currentSimulationState, false );
+
+            processingString.setCurrentSymbol( currentSimulationIndex );
+            currentSimulationState = simulationSteps.get( currentSimulationIndex );
+            processingString.setCurrentState( currentSimulationState );
+
+            changeInternalStatesSelection( currentSimulationState, true );
+            
+        }
+        
+        if ( currentSimulationIndex == 0 ) {
+            btnPreviousStep.setEnabled( false );
+        }
+        
+        drawPanel.repaint();
+        
+    }//GEN-LAST:event_btnPreviousStepActionPerformed
+    
+    private void processingStringToDefault() {
+        processingString.setAccepted( false );
+        processingString.setRejected( false );
+        processingString.setColor( Constants.PROCESSING_STRING_COLOR );
+        processingString.setCurrentSymbolColor( Constants.PROCESSING_STRING_CURRENT_SYMBOL_COLOR );
+        processingString.setControlColor( Constants.PROCESSING_STRING_CONTROL_COLOR );
+    }
+    
+    private void processingStringToAccepted() {
+        processingString.setAccepted( true );
+        processingString.setRejected( false );
+        processingString.setColor( Constants.PROCESSING_STRING_ACCEPTED_COLOR );
+        processingString.setCurrentSymbolColor( Constants.PROCESSING_STRING_CURRENT_SYMBOL_COLOR );
+        processingString.setControlColor( Constants.PROCESSING_STRING_CONTROL_COLOR );
+    }
+    
+    private void processingStringToRejected() {
+        processingString.setAccepted( false );
+        processingString.setRejected( true );
+        processingString.setColor( Constants.PROCESSING_STRING_REJECTED_COLOR );
+        processingString.setCurrentSymbolColor( Constants.PROCESSING_STRING_REJECTED_CURRENT_SYMBOL_COLOR );
+        processingString.setControlColor( Constants.PROCESSING_STRING_REJECTED_CONTROL_COLOR );
+    }
+    
+    private void changeInternalStatesSelection( State state, boolean selected ) {
+        
+        for ( State s : state.getInternalStates() ) {
+            s.setSelected( selected );
+        }
+        
+    }
     
     private void lookForSelectedShapes() {
         
@@ -1129,16 +1228,17 @@ public class JIFNFA extends javax.swing.JInternalFrame {
         btnAddTransition.setEnabled( enable );
         btnMove.setEnabled( enable );
         btnShowFormalDefinition.setEnabled( enable );
+        btnShowEquivalentDFA.setEnabled( enable );
         btnSave.setEnabled( enable );
         btnLoad.setEnabled( enable );
-        btnSaveAsImage.setEnabled( enable );
         btnClear.setEnabled( enable );
         
         areaStrings.setEnabled( enable );
         btnTestStrings.setEnabled( enable );
         txtStringSimulation.setEnabled( enable );
-        btnRunSimulation.setEnabled( enable );
-        btnStopSimulation.setEnabled( enable );
+        btnEvaluateSimulation.setEnabled( enable );
+        btnNextStep.setEnabled( enable );
+        btnPreviousStep.setEnabled( enable );
         btnClearSimulation.setEnabled( enable );
         
     }
@@ -1176,9 +1276,9 @@ public class JIFNFA extends javax.swing.JInternalFrame {
     
     private void createExample() throws IllegalArgumentException {
         
-        State q0 = nfa.addState( true, false, 100, 200 );
-        State q1 = nfa.addState( false, false, 250, 200 );
-        State q2 = nfa.addState( false, true, 400, 200 );
+        State q0 = nfa.addState( true, false, 250, 200 );
+        State q1 = nfa.addState( false, false, 400, 200 );
+        State q2 = nfa.addState( false, true, 550, 200 );
         
         nfa.addTransition( q0, q0, '0' );
         nfa.addTransition( q0, q0, '1' );
@@ -1194,15 +1294,16 @@ public class JIFNFA extends javax.swing.JInternalFrame {
     private javax.swing.JToggleButton btnAddTransition;
     private javax.swing.JButton btnClear;
     private javax.swing.JButton btnClearSimulation;
+    private javax.swing.JButton btnEvaluateSimulation;
     private javax.swing.ButtonGroup btnGroup;
     private javax.swing.JButton btnLoad;
     private javax.swing.JToggleButton btnMove;
-    private javax.swing.JButton btnRunSimulation;
+    private javax.swing.JButton btnNextStep;
+    private javax.swing.JButton btnPreviousStep;
     private javax.swing.JButton btnSave;
     private javax.swing.JButton btnSaveAsImage;
     private javax.swing.JButton btnShowEquivalentDFA;
     private javax.swing.JButton btnShowFormalDefinition;
-    private javax.swing.JButton btnStopSimulation;
     private javax.swing.JButton btnTestStrings;
     private br.com.davidbuzatto.jaas.gui.DrawPanel drawPanel;
     private javax.swing.JMenuItem itemAlias;

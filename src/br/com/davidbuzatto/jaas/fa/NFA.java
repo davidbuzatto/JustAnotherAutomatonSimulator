@@ -135,7 +135,6 @@ public class NFA extends FiniteAutomaton implements Serializable {
         Set<Character> symbols = collectSymbols( false );
         
         for ( char s : symbols ) {
-            System.out.println( s );
             tm.getSymbols().add( String.valueOf( s ) );
         }
         

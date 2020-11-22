@@ -3,12 +3,16 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package br.com.davidbuzatto.jaas.nfa;
+package br.com.davidbuzatto.jaas.fa;
 
 /**
  *
  * @author David
  */
-public class State {
+public enum ProcessingStringLabelType {
+    
+    DEFAULT,
+    ALIAS,
+    INTERNAL_STATES
     
 }

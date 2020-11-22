@@ -5,6 +5,7 @@
  */
 package br.com.davidbuzatto.jaas.gui;
 
+import br.com.davidbuzatto.jaas.fa.ProcessingStringLabelType;
 import br.com.davidbuzatto.jaas.utils.Constants;
 import com.formdev.flatlaf.FlatDarkLaf;
 import com.vdurmont.emoji.EmojiParser;
@@ -24,16 +25,16 @@ public class MainWindow extends javax.swing.JFrame {
         initComponents();
         setTitle( getTitle() + " - " + Constants.VERSION );
         
-        /*JIFDFA jif1 = new JIFDFA( true, null );
+        JIFDFA jif1 = new JIFDFA( true, null, ProcessingStringLabelType.DEFAULT );
         JIFNFA jif2 = new JIFNFA( true );
         JIFENFA jif3 = new JIFENFA( true );
         
         desktopPane.add( jif1 );
         desktopPane.add( jif2 );
         desktopPane.add( jif3 );
-        jif1.setVisible( true );
-        jif2.setVisible( true );
-        jif3.setVisible( true );*/
+        //jif1.setVisible( true );
+        //jif2.setVisible( true );
+        jif3.setVisible( true );
         
         setExtendedState( MAXIMIZED_BOTH );
         
@@ -141,7 +142,7 @@ public class MainWindow extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnDFAActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDFAActionPerformed
-        JIFDFA jif = new JIFDFA( true, null );
+        JIFDFA jif = new JIFDFA( true, null, ProcessingStringLabelType.DEFAULT );
         desktopPane.add( jif );
         jif.setVisible( true );
     }//GEN-LAST:event_btnDFAActionPerformed

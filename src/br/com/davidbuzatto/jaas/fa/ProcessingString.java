@@ -27,23 +27,31 @@ public class ProcessingString extends Shape implements Serializable {
     private Color controlColor;
     
     private int currentSymbol;
+    private State currentState;
     
     private boolean accepted;
     private boolean rejected;
 
+    private ProcessingStringLabelType labelType = ProcessingStringLabelType.DEFAULT;
+    
     public ProcessingString( String string,
             Color color,
             Color currentSymbolColor,
             Color controlColor,
             int currentSymbol,
+            ProcessingStringLabelType labelType,
             double x, 
             double y ) {
+        if ( string.isEmpty() ) {
+            string = "\u03B5";
+        }
         this.string = string;
-        stringData = string.toCharArray();
+        this.stringData = string.toCharArray();
         this.color = color;
         this.currentSymbolColor = currentSymbolColor;
         this.controlColor = controlColor;
         this.currentSymbol = currentSymbol;
+        this.labelType = labelType;
         this.xStart = x;
         this.yStart = y;
     }
@@ -66,6 +74,9 @@ public class ProcessingString extends Shape implements Serializable {
         
         for ( int i = 0; i < stringData.length; i++ ) {
             
+            g2d.setFont( Constants.PROCESSING_STRING_FONT );
+            fm = g2d.getFontMetrics();
+                    
             char c = stringData[i];
             int cw = fm.charWidth( c );
             
@@ -78,12 +89,28 @@ public class ProcessingString extends Shape implements Serializable {
             g2d.drawString( c + "", xc, y );
             
             if ( p == currentSymbol ) {
+                
                 g2d.setColor( controlColor );
                 xc -= 1;
+                
                 g2d.draw( new Line2D.Double( xc + cw / 2, y - 25, xc + cw / 2, y - 40 ) );
                 g2d.draw( new Line2D.Double( xc + cw / 2, y - 25, xc + cw / 2 - 5, y - 30 ) );
                 g2d.draw( new Line2D.Double( xc + cw / 2, y - 25, xc + cw / 2 + 5, y - 30 ) );
+                
+                if ( currentState != null ) {
+                    
+                    String st = generateLabel();
+                    
+                    g2d.setFont( Constants.PROCESSING_STRING_STATE_FONT );
+                    fm = g2d.getFontMetrics();
+                    w = fm.stringWidth( st );
+                    
+                    g2d.drawString( st, ( xc + cw / 2 ) - w / 2, y - 50 );
+                    
+                }
+                
                 xc += 1;
+                
             }
             
             xc += cw;
@@ -91,10 +118,12 @@ public class ProcessingString extends Shape implements Serializable {
             
         }
         
+        g2d.setFont( Constants.PROCESSING_STRING_FONT );
+        
         if ( accepted ) {
-            g2d.drawString( "Accepted!", xc + 30, y );
+            g2d.drawString( String.format( "Accepted at %s!", generateLabel() ), xc + 30, y );
         } else if ( rejected ) {
-            g2d.drawString( "Rejected!", xc + 30, y );
+            g2d.drawString( String.format( "Rejected at %s!", generateLabel() ), xc + 30, y );
         }
         
         g2d.dispose();
@@ -121,7 +150,15 @@ public class ProcessingString extends Shape implements Serializable {
     public void setString( String string ) {
         this.string = string;
     }
+    
+    public State getCurrentState() {
+        return currentState;
+    }
 
+    public void setCurrentState( State currentState ) {
+        this.currentState = currentState;
+    }
+    
     public Color getColor() {
         return color;
     }
@@ -152,6 +189,21 @@ public class ProcessingString extends Shape implements Serializable {
 
     public void setCurrentSymbol( int currentSymbol ) {
         this.currentSymbol = currentSymbol;
+    }
+    
+    private String generateLabel() {
+        
+        switch ( labelType ) {
+            case DEFAULT:
+                return currentState.generateDefaultRep();
+            case ALIAS:
+                return currentState.generateAliasRep();
+            case INTERNAL_STATES:
+                return currentState.generateInternalStatesRep();
+        }
+        
+        return "something wrong...";
+        
     }
     
 }

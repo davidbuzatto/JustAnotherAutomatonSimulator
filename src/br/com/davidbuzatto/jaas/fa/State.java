@@ -63,6 +63,15 @@ public class State extends Shape implements Serializable, Comparable<State> {
         
         g2d = (Graphics2D) g2d.create();
         
+        g2d.setStroke( Constants.TRANSITION_STROKE );
+        g2d.setColor( Constants.TRANSITION_STROKE_COLOR );
+        
+        if ( initial ) {
+            g2d.draw( new Line2D.Double( xStart - 20, yStart + ( yEnd - yStart ) / 2, xStart, yStart + ( yEnd - yStart ) / 2 ) );
+            g2d.draw( new Line2D.Double( xStart - 5, yStart + ( yEnd - yStart ) / 2 - 5, xStart, yStart + ( yEnd - yStart ) / 2 ) );
+            g2d.draw( new Line2D.Double( xStart - 5, yStart + ( yEnd - yStart ) / 2 + 5, xStart, yStart + ( yEnd - yStart ) / 2 ) );
+        }
+        
         g2d.setStroke( Constants.STATE_STROKE );
         
         if ( selected ) {
@@ -107,10 +116,9 @@ public class State extends Shape implements Serializable, Comparable<State> {
             if ( alias != null ) {
                 
                 if ( internalStates != null ) {
-                    String is = internalStates.toString();
-                    q = "{" + is.substring( 1, is.length() - 1 ) + "}";
+                    q = generateInternalStatesRep();
                 } else {
-                    q = "q" + number;
+                    q = generateDefaultRep();
                 }
                 
                 w = fm.stringWidth( q );
@@ -145,20 +153,6 @@ public class State extends Shape implements Serializable, Comparable<State> {
                         (int) xEnd, 
                         (int) yStart );
             }
-        }
-        
-        g2d.setStroke( Constants.TRANSITION_STROKE );
-        
-        if ( selected ) {
-            g2d.setColor( Constants.SELECTED_TRANSITION_STROKE_COLOR );
-        } else {
-            g2d.setColor( Constants.TRANSITION_STROKE_COLOR );
-        }
-        
-        if ( initial ) {
-            g2d.draw( new Line2D.Double( xStart - 20, yStart + ( yEnd - yStart ) / 2, xStart, yStart + ( yEnd - yStart ) / 2 ) );
-            g2d.draw( new Line2D.Double( xStart - 5, yStart + ( yEnd - yStart ) / 2 - 5, xStart, yStart + ( yEnd - yStart ) / 2 ) );
-            g2d.draw( new Line2D.Double( xStart - 5, yStart + ( yEnd - yStart ) / 2 + 5, xStart, yStart + ( yEnd - yStart ) / 2 ) );
         }
         
         g2d.dispose();
@@ -321,15 +315,31 @@ public class State extends Shape implements Serializable, Comparable<State> {
     @Override
     public String toString() {
         if ( alias != null ) {
-            return alias;
+            return generateAliasRep();
         } else if ( internalStates != null ) {
-            String is = internalStates.toString();
-            return "{" + is.substring( 1, is.length() - 1 ) + "}";
+            return generateInternalStatesRep();
         } else {
-            return "q" + number;
+            return generateDefaultRep();
         }
     }
 
+    public String generateAliasRep() {
+        return alias;
+    }
+    
+    public String generateInternalStatesRep() {
+        if ( internalStates != null ) {
+            String is = internalStates.toString();
+            return "{" + is.substring( 1, is.length() - 1 ) + "}";
+        } else {
+            return "{}";
+        }
+    }
+    
+    public String generateDefaultRep() {
+        return "q" + number;
+    }
+    
     @Override
     public int hashCode() {
         int hash = 5;
