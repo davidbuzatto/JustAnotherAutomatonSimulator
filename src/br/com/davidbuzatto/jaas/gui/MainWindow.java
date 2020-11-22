@@ -9,6 +9,7 @@ import br.com.davidbuzatto.jaas.fa.ProcessingStringLabelType;
 import br.com.davidbuzatto.jaas.utils.Constants;
 import com.formdev.flatlaf.FlatDarkLaf;
 import com.vdurmont.emoji.EmojiParser;
+import java.awt.Toolkit;
 import javax.swing.JOptionPane;
 
 /**
@@ -25,16 +26,16 @@ public class MainWindow extends javax.swing.JFrame {
         initComponents();
         setTitle( getTitle() + " - " + Constants.VERSION );
         
-        JIFDFA jif1 = new JIFDFA( true, null, ProcessingStringLabelType.DEFAULT );
-        JIFNFA jif2 = new JIFNFA( true );
-        JIFENFA jif3 = new JIFENFA( true );
+        //JIFDFA jif1 = new JIFDFA( true, null, ProcessingStringLabelType.DEFAULT );
+        //JIFNFA jif2 = new JIFNFA( true );
+        //JIFENFA jif3 = new JIFENFA( true );
         
-        desktopPane.add( jif1 );
-        desktopPane.add( jif2 );
-        desktopPane.add( jif3 );
+        //desktopPane.add( jif1 );
+        //desktopPane.add( jif2 );
+        //desktopPane.add( jif3 );
         //jif1.setVisible( true );
         //jif2.setVisible( true );
-        jif3.setVisible( true );
+        //jif3.setVisible( true );
         
         setExtendedState( MAXIMIZED_BOTH );
         
@@ -59,86 +60,88 @@ public class MainWindow extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Just Another Automaton Simulator");
+        setIconImage(Toolkit.getDefaultToolkit().getImage( getClass().getResource(
+            "/br/com/davidbuzatto/jaas/gui/icons/dfa.png" ) ));
 
-        toolbar.setFloatable(false);
+toolbar.setFloatable(false);
 
-        btnDFA.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/davidbuzatto/jaas/gui/icons/dfaBig.png"))); // NOI18N
-        btnDFA.setText("DFA");
-        btnDFA.setFocusable(false);
-        btnDFA.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnDFA.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btnDFA.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnDFAActionPerformed(evt);
-            }
-        });
-        toolbar.add(btnDFA);
+btnDFA.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/davidbuzatto/jaas/gui/icons/dfaBig.png"))); // NOI18N
+btnDFA.setText("DFA");
+btnDFA.setFocusable(false);
+btnDFA.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+btnDFA.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+btnDFA.addActionListener(new java.awt.event.ActionListener() {
+    public void actionPerformed(java.awt.event.ActionEvent evt) {
+        btnDFAActionPerformed(evt);
+    }
+    });
+    toolbar.add(btnDFA);
 
-        btnNFA.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/davidbuzatto/jaas/gui/icons/nfaBig.png"))); // NOI18N
-        btnNFA.setText("NFA");
-        btnNFA.setFocusable(false);
-        btnNFA.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnNFA.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btnNFA.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnNFAActionPerformed(evt);
-            }
-        });
-        toolbar.add(btnNFA);
+    btnNFA.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/davidbuzatto/jaas/gui/icons/nfaBig.png"))); // NOI18N
+    btnNFA.setText("NFA");
+    btnNFA.setFocusable(false);
+    btnNFA.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+    btnNFA.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+    btnNFA.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            btnNFAActionPerformed(evt);
+        }
+    });
+    toolbar.add(btnNFA);
 
-        btnENFA.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/davidbuzatto/jaas/gui/icons/enfaBig.png"))); // NOI18N
-        btnENFA.setText("\u03b5NFA");
-        btnENFA.setFocusable(false);
-        btnENFA.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnENFA.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btnENFA.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnENFAActionPerformed(evt);
-            }
-        });
-        toolbar.add(btnENFA);
-        toolbar.add(filler);
+    btnENFA.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/davidbuzatto/jaas/gui/icons/enfaBig.png"))); // NOI18N
+    btnENFA.setText("\u03b5NFA");
+    btnENFA.setFocusable(false);
+    btnENFA.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+    btnENFA.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+    btnENFA.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            btnENFAActionPerformed(evt);
+        }
+    });
+    toolbar.add(btnENFA);
+    toolbar.add(filler);
 
-        btnAbout.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/davidbuzatto/jaas/gui/icons/help.png"))); // NOI18N
-        btnAbout.setToolTipText("About");
-        btnAbout.setFocusable(false);
-        btnAbout.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnAbout.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btnAbout.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnAboutActionPerformed(evt);
-            }
-        });
-        toolbar.add(btnAbout);
+    btnAbout.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/davidbuzatto/jaas/gui/icons/help.png"))); // NOI18N
+    btnAbout.setToolTipText("About");
+    btnAbout.setFocusable(false);
+    btnAbout.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+    btnAbout.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+    btnAbout.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            btnAboutActionPerformed(evt);
+        }
+    });
+    toolbar.add(btnAbout);
 
-        javax.swing.GroupLayout desktopPaneLayout = new javax.swing.GroupLayout(desktopPane);
-        desktopPane.setLayout(desktopPaneLayout);
-        desktopPaneLayout.setHorizontalGroup(
-            desktopPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
-        desktopPaneLayout.setVerticalGroup(
-            desktopPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 734, Short.MAX_VALUE)
-        );
+    javax.swing.GroupLayout desktopPaneLayout = new javax.swing.GroupLayout(desktopPane);
+    desktopPane.setLayout(desktopPaneLayout);
+    desktopPaneLayout.setHorizontalGroup(
+        desktopPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        .addGap(0, 0, Short.MAX_VALUE)
+    );
+    desktopPaneLayout.setVerticalGroup(
+        desktopPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        .addGap(0, 734, Short.MAX_VALUE)
+    );
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(toolbar, javax.swing.GroupLayout.DEFAULT_SIZE, 1000, Short.MAX_VALUE)
-            .addComponent(desktopPane)
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(toolbar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(desktopPane))
-        );
+    javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+    getContentPane().setLayout(layout);
+    layout.setHorizontalGroup(
+        layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        .addComponent(toolbar, javax.swing.GroupLayout.DEFAULT_SIZE, 1000, Short.MAX_VALUE)
+        .addComponent(desktopPane)
+    );
+    layout.setVerticalGroup(
+        layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        .addGroup(layout.createSequentialGroup()
+            .addComponent(toolbar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+            .addComponent(desktopPane))
+    );
 
-        pack();
-        setLocationRelativeTo(null);
+    pack();
+    setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnDFAActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDFAActionPerformed
