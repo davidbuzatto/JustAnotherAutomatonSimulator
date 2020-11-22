@@ -95,25 +95,27 @@ public class DrawingTransition extends Shape implements Serializable {
             g2d.setColor( strokeColor );
         }
                     
-        double angle = Math.atan2( target.getYStartD() + Constants.STATE_RADIUS - ( source.getYStartD() + Constants.STATE_RADIUS ),
-                target.getXStartD() + Constants.STATE_RADIUS - ( source.getXStartD() + Constants.STATE_RADIUS ) );
+        double angle = Math.atan2( 
+                target.getYStart() + Constants.STATE_RADIUS - ( source.getYStart() + Constants.STATE_RADIUS ),
+                target.getXStart() + Constants.STATE_RADIUS - ( source.getXStart() + Constants.STATE_RADIUS ) );
         double sAngle = Math.PI / 2;
         double tAngle = Math.PI / 10;
         
         Point2D.Double midPoint = new Point2D.Double(
-                source.getXEndD() + ( target.getXStartD() - source.getXEndD() ) / 2,
-                source.getYEndD() + ( target.getYStartD() - source.getYEndD() ) / 2 );
+                source.getXEnd() + ( target.getXStart() - source.getXEnd() ) / 2,
+                source.getYEnd() + ( target.getYStart() - source.getYEnd() ) / 2 );
 
         Point2D.Double controlPoint = new Point2D.Double( 
                 midPoint.x + Math.cos( angle - sAngle ) * controlPointMagnitude,
                 midPoint.y + Math.sin( angle - sAngle ) * controlPointMagnitude );
         
-        double angleControl = Math.atan2( target.getYStartD() + Constants.STATE_RADIUS - ( controlPoint.y ),
-                    target.getXStartD() + Constants.STATE_RADIUS - ( controlPoint.x ) );
+        double angleControl = Math.atan2( 
+                    target.getYStart() + Constants.STATE_RADIUS - ( controlPoint.y ),
+                    target.getXStart() + Constants.STATE_RADIUS - ( controlPoint.x ) );
             
         Point2D.Double controlPointArrow = new Point2D.Double( 
-                target.getXStartD() + Constants.STATE_RADIUS - Math.cos( angleControl ) * Constants.STATE_RADIUS,
-                target.getYStartD() + Constants.STATE_RADIUS - Math.sin( angleControl ) * Constants.STATE_RADIUS);
+                target.getXStart() + Constants.STATE_RADIUS - Math.cos( angleControl ) * Constants.STATE_RADIUS,
+                target.getYStart() + Constants.STATE_RADIUS - Math.sin( angleControl ) * Constants.STATE_RADIUS);
             
         /*g2d.setColor( Color.RED );
         g2d.fillRect( (int) (midPoint.x),
@@ -128,22 +130,40 @@ public class DrawingTransition extends Shape implements Serializable {
                     
         if ( source.equals( target ) ) {
             
-            g2d.draw( new Ellipse2D.Double( 
-                    source.getXStartD() + 10, 
-                    source.getYStartD() + 10 - Constants.STATE_RADIUS, 
-                    source.getXEndD() - source.getXStartD() - 20, 
-                    source.getYEndD() - source.getYStartD() - 20 ) );
+            xSymbols = source.getXStart() + Constants.STATE_RADIUS;
+            ySymbols = source.getYStart() - Constants.STATE_RADIUS + 5;
             
-            Graphics2D g2dc = (Graphics2D) g2d.create();
-            g2dc.translate( source.getXStartD(), source.getYStartD() + Constants.STATE_RADIUS );
-            g2dc.rotate( Math.toRadians( 100 ), 10, -21 );
-            g2dc.draw( new Line2D.Double( 3, -26, 10, -21 ) );
-            g2dc.draw( new Line2D.Double( 5, -16, 10, -21 ) );
-            g2dc.dispose();
+            Point2D.Double symbolsPoint = new Point2D.Double( 
+                    xSymbols + labelControlXOffeset, 
+                    ySymbols + labelControlYOffeset );
+
+            double angleSymbols = Math.atan2( 
+                    target.getYStart() + Constants.STATE_RADIUS - ( symbolsPoint.y ),
+                    target.getXStart() + Constants.STATE_RADIUS - ( symbolsPoint.x ) );
             
-            xSymbols = (int) ( source.getXStartD() + Constants.STATE_RADIUS );
-            ySymbols = (int) ( source.getYStartD() - Constants.STATE_RADIUS + 5 );
+            /*g2d.setColor( Color.RED );
+            g2d.fillRect( (int) ( symbolsPoint.x ),
+                          (int) ( symbolsPoint.y ), 5, 5 );*/
             
+            Graphics2D g2dArc = (Graphics2D) g2d.create();
+            double arcDiameter = Constants.STATE_RADIUS * 2 - 20;
+            g2dArc.rotate( angleSymbols - sAngle, 
+                    source.getXStart() + Constants.STATE_RADIUS, 
+                    source.getYStart() + Constants.STATE_RADIUS );
+            g2dArc.draw( new Ellipse2D.Double( 
+                    source.getXStart() + Constants.STATE_RADIUS - 15, 
+                    source.getYStart() - Constants.STATE_RADIUS + 10, 
+                    arcDiameter, 
+                    arcDiameter ) );
+            
+            Graphics2D g2dArrow = (Graphics2D) g2dArc.create();
+            g2dArrow.translate( source.getXStart(), source.getYStart() + Constants.STATE_RADIUS );
+            g2dArrow.rotate( Math.toRadians( 100 ), 10, -21 );
+            g2dArrow.draw( new Line2D.Double( 3, -26, 10, -21 ) );
+            g2dArrow.draw( new Line2D.Double( 5, -16, 10, -21 ) );
+            g2dArrow.dispose();
+            g2dArc.dispose();
+                    
         } else {
             
             /*g2d.setColor( Color.RED );
@@ -158,12 +178,12 @@ public class DrawingTransition extends Shape implements Serializable {
             g2d.setColor( Color.BLACK );*/
             
             g2d.draw( new QuadCurve2D.Double( 
-                    source.getXStartD() + Constants.STATE_RADIUS,
-                    source.getYStartD() + Constants.STATE_RADIUS,
+                    source.getXStart() + Constants.STATE_RADIUS,
+                    source.getYStart() + Constants.STATE_RADIUS,
                     controlPoint.x,
                     controlPoint.y,
-                    target.getXStartD() + Constants.STATE_RADIUS, 
-                    target.getYStartD() + Constants.STATE_RADIUS ) );
+                    target.getXStart() + Constants.STATE_RADIUS, 
+                    target.getYStart() + Constants.STATE_RADIUS ) );
             
             Graphics2D g2dc = (Graphics2D) g2d.create();
             g2dc.translate( controlPointArrow.x, controlPointArrow.y );
@@ -172,12 +192,12 @@ public class DrawingTransition extends Shape implements Serializable {
             g2dc.draw( new Line2D.Double( -5, 5, 0, 0 ) );
             g2dc.dispose();
             
-            xSymbols = target.getXStartD() > source.getXEndD() ? 
-                source.getXEndD() + ( target.getXStartD() - source.getXEndD() ) / 2 :
-                target.getXEndD() + ( source.getXStartD() - target.getXEndD() ) / 2; 
-            ySymbols = target.getYStartD() > source.getYEndD() ? 
-                source.getYEndD() + ( target.getYStartD() - source.getYEndD() ) / 2 - 5:
-                target.getYEndD() + ( source.getYStartD() - target.getYEndD() ) / 2 - 5;
+            xSymbols = target.getXStart() > source.getXEnd() ? 
+                source.getXEnd() + ( target.getXStart() - source.getXEnd() ) / 2 :
+                target.getXEnd() + ( source.getXStart() - target.getXEnd() ) / 2; 
+            ySymbols = target.getYStart() > source.getYEnd() ? 
+                source.getYEnd() + ( target.getYStart() - source.getYEnd() ) / 2 - 5:
+                target.getYEnd() + ( source.getYStart() - target.getYEnd() ) / 2 - 5;
             /*xSymbols = controlPoint.x; 
             ySymbols = controlPoint.y;*/
             

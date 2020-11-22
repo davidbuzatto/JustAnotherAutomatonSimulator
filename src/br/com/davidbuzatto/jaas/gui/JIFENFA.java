@@ -1090,7 +1090,8 @@ public class JIFENFA extends javax.swing.JInternalFrame {
         
         String alias = JOptionPane.showInputDialog( 
                 this, 
-                String.format( "\"%s\" alias:", selectedState ) );
+                String.format( "\"%s\" alias (empty to default):", selectedState ), 
+                selectedState.getAlias() == null ? "" : selectedState.getAlias() );
         
         if ( alias != null && !alias.isBlank()) {
             selectedState.setAlias( alias.trim() );

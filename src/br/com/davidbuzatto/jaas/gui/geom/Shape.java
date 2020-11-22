@@ -114,22 +114,6 @@ public abstract class Shape implements Serializable {
     public static void setIdCount( int value ) {
         idCount = value;
     }
-
-    public double getXStartD() {
-        return xStart;
-    }
-
-    public double getYStartD() {
-        return yStart;
-    }
-
-    public double getXEndD() {
-        return xEnd;
-    }
-
-    public double getYEndD() {
-        return yEnd;
-    }
     
     @Override
     public int hashCode() {
