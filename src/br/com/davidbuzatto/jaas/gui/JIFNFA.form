@@ -456,9 +456,6 @@
               </Properties>
             </Component>
             <Component class="javax.swing.JTextField" name="txtStringSimulation">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="010101"/>
-              </Properties>
             </Component>
             <Component class="javax.swing.JButton" name="btnEvaluateSimulation">
               <Properties>

@@ -398,8 +398,6 @@ public class JIFNFA extends javax.swing.JInternalFrame {
 
         lblStringSImulation.setText("String:");
 
-        txtStringSimulation.setText("010101");
-
         btnEvaluateSimulation.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/davidbuzatto/jaas/gui/icons/accept.png"))); // NOI18N
         btnEvaluateSimulation.setToolTipText("run");
         btnEvaluateSimulation.addActionListener(new java.awt.event.ActionListener() {
