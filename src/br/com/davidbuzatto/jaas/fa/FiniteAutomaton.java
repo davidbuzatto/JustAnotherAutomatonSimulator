@@ -7,6 +7,7 @@ package br.com.davidbuzatto.jaas.fa;
 
 import br.com.davidbuzatto.jaas.gui.TransitionFunctionTableModel;
 import br.com.davidbuzatto.jaas.gui.geom.Shape;
+import br.com.davidbuzatto.jaas.utils.Constants;
 import java.awt.Graphics2D;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -20,6 +21,8 @@ import java.util.TreeSet;
  * @author David
  */
 public abstract class FiniteAutomaton extends Shape implements Serializable {
+    
+    private static final long serialVersionUID = Constants.SERIAL_VERSION;
     
     protected int stateNumberCount;
     protected State initial;

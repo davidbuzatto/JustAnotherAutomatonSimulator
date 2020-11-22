@@ -5,14 +5,8 @@
  */
 package br.com.davidbuzatto.jaas.fa;
 
-import br.com.davidbuzatto.jaas.gui.geom.Shape;
 import br.com.davidbuzatto.jaas.utils.Constants;
 import java.awt.Color;
-import java.awt.Graphics2D;
-import java.awt.geom.Ellipse2D;
-import java.awt.geom.Line2D;
-import java.awt.geom.Point2D;
-import java.awt.geom.QuadCurve2D;
 import java.io.Serializable;
 
 /**
@@ -20,6 +14,8 @@ import java.io.Serializable;
  * @author David
  */
 public class Transition implements Serializable {
+    
+    private static final long serialVersionUID = Constants.SERIAL_VERSION;
     
     private State source;
     private State target;

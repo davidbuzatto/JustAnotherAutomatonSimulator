@@ -6,14 +6,13 @@
 package br.com.davidbuzatto.jaas.utils;
 
 import java.io.File;
-import java.io.Serializable;
 import java.util.prefs.Preferences;
 
 /**
  *
  * @author David
  */
-public class AppPrefs implements Serializable {
+public class AppPrefs {
     
     public static String DEFAULT_DIR = "defaultDir";
     

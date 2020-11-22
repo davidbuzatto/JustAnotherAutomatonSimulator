@@ -26,6 +26,8 @@ import java.util.TreeSet;
  */
 public class DrawingTransition extends Shape implements Serializable {
     
+    private static final long serialVersionUID = Constants.SERIAL_VERSION;
+    
     private State source;
     private State target;
     private Set<Character> symbols;
@@ -45,6 +47,8 @@ public class DrawingTransition extends Shape implements Serializable {
     
     private class SymbolsComparator implements Comparator<Character>, Serializable {
 
+        private static final long serialVersionUID = Constants.SERIAL_VERSION;
+        
         @Override
         public int compare( Character o1, Character o2 ) {
             if ( o1 == '\u03B5' && o2 == '\u03B5' ) {

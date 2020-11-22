@@ -6,6 +6,7 @@
 package br.com.davidbuzatto.jaas.fa;
 
 import br.com.davidbuzatto.jaas.gui.TransitionFunctionTableModel;
+import br.com.davidbuzatto.jaas.utils.Constants;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -18,6 +19,8 @@ import java.util.Set;
  * @author David
  */
 public class DFA extends FiniteAutomaton implements Serializable {
+    
+    private static final long serialVersionUID = Constants.SERIAL_VERSION;
     
     @Override
     public void addTransition( State source, State target, char symbol ) 

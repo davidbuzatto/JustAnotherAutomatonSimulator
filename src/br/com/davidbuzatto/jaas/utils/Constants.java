@@ -16,6 +16,7 @@ import java.awt.Font;
 public class Constants {
     
     public static final String VERSION = "v1.01";
+    public static final long SERIAL_VERSION = 1;
     
     public static final double STATE_RADIUS = 25;
     

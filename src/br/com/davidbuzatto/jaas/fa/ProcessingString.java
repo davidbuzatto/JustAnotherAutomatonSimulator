@@ -19,6 +19,8 @@ import java.io.Serializable;
  */
 public class ProcessingString extends Shape implements Serializable {
 
+    private static final long serialVersionUID = Constants.SERIAL_VERSION;
+    
     private String string;
     private char[] stringData;
     

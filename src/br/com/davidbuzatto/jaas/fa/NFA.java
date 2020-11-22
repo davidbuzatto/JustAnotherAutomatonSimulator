@@ -6,6 +6,7 @@
 package br.com.davidbuzatto.jaas.fa;
 
 import br.com.davidbuzatto.jaas.gui.TransitionFunctionTableModel;
+import br.com.davidbuzatto.jaas.utils.Constants;
 import java.io.Serializable;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -24,6 +25,8 @@ import java.util.TreeSet;
  * @author David
  */
 public class NFA extends FiniteAutomaton implements Serializable {
+    
+    private static final long serialVersionUID = Constants.SERIAL_VERSION;
     
     private Map<State, Set<State>> ecloses;
     

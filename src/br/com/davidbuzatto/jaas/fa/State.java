@@ -24,6 +24,8 @@ import java.util.Set;
  */
 public class State extends Shape implements Serializable, Comparable<State> {
 
+    private static final long serialVersionUID = Constants.SERIAL_VERSION;
+    
     private int number;
     private boolean initial;
     private boolean finall;

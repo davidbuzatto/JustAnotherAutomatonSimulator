@@ -5,6 +5,7 @@
  */
 package br.com.davidbuzatto.jaas.gui.geom;
 
+import br.com.davidbuzatto.jaas.utils.Constants;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.io.Serializable;
@@ -14,6 +15,8 @@ import java.io.Serializable;
  * @author David
  */
 public abstract class Shape implements Serializable {
+    
+    private static final long serialVersionUID = Constants.SERIAL_VERSION;
     
     private static int idCount;
     private int id;
