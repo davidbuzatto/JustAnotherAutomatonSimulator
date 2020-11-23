@@ -771,10 +771,12 @@ public class JIFNFA extends javax.swing.JInternalFrame {
         
         try {
             
+            DFA dfa = nfa.constructEquivalentDFA();
+            
             for ( String string : strings ) {
                 sb.append( String.format( "%s %s L(A)\n", 
                         string.length() == 0 ? "\u03B5" : string, 
-                        nfa.accepts( string, null ) ? "\u2208" : "\u2209" ) );
+                        dfa.accepts( string, null ) ? "\u2208" : "\u2209" ) );
             }
 
             JOptionPane.showMessageDialog( this, createJTextAreaShowData( sb.toString(), 20, 50 ), 

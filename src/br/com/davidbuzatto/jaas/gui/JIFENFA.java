@@ -820,10 +820,12 @@ public class JIFENFA extends javax.swing.JInternalFrame {
         
         try {
             
+            DFA dfa = enfa.constructEquivalentDFA();
+            
             for ( String string : strings ) {
                 sb.append( String.format( "%s %s L(A)\n", 
                         string.length() == 0 ? "\u03B5" : string, 
-                        enfa.accepts( string, null ) ? "\u2208" : "\u2209" ) );
+                        dfa.accepts( string, null ) ? "\u2208" : "\u2209" ) );
             }
 
             JOptionPane.showMessageDialog( this, createJTextAreaShowData( sb.toString(), 20, 50 ), 
