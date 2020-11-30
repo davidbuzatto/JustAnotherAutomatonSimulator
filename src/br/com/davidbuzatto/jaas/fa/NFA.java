@@ -344,6 +344,7 @@ public class NFA extends FiniteAutomaton implements Serializable {
             for ( State is : s.getInternalStates() ) {
                 if ( finalStates.contains( is ) ) {
                     s.setFinal( true );
+                    break;
                 }
             }
         }
