@@ -169,7 +169,6 @@ public class NFA extends FiniteAutomaton implements Serializable {
             
             for ( char s : symbols ) {
                 
-                Transition tf = null;
                 StringBuilder tt = new StringBuilder();
                 boolean firstT = true;
                 
@@ -316,18 +315,10 @@ public class NFA extends FiniteAutomaton implements Serializable {
                                     break;
                                 }
                             }
-
-                            boolean isFinal = false;
-                            for ( State fs : finalStates ) {
-                                if ( eclosedStates.contains( fs ) ) {
-                                    isFinal = true;
-                                    break;
-                                }
-                            }
-                                
+                            
                             if ( n == null ) {
 
-                                n = dfa.addState( false, isFinal, 0, 0 );
+                                n = dfa.addState( false, false, 0, 0 );
                                 if ( aliasC < 'Z' ) {
                                     aliasC++;
                                 }
@@ -347,6 +338,14 @@ public class NFA extends FiniteAutomaton implements Serializable {
             
             }
             
+        }
+        
+        for ( State s : dfa.getStates() ) {
+            for ( State is : s.getInternalStates() ) {
+                if ( finalStates.contains( is ) ) {
+                    s.setFinal( true );
+                }
+            }
         }
         
         /*for ( State s : dfa.states ) {

@@ -56,7 +56,7 @@ public class DrawingTransition extends Shape implements Serializable {
             } else if ( o1 == '\u03B5' ) {
                 return -1;
             } else if ( o2 == '\u03B5' ) {
-                return -1;
+                return 1;
             } else {
                 return o1.compareTo( o2 );
             }
